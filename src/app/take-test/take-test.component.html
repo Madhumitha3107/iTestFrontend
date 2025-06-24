@@ -1,53 +1,34 @@
 <mat-sidenav-container class="test-layout">
-  <!-- Sidebar -->
-  <!-- <mat-sidenav mode="side" opened class="sidenav">
-    <mat-toolbar color="primary">ITest</mat-toolbar>
-  </mat-sidenav> -->
 
-  <!-- Main content -->
   <mat-sidenav-content>
-    <!-- Fixed Top Navbar -->
-    <!-- <mat-toolbar color="primary" class="topbar">
-      <span>{{ quizTitle }}</span>
-    </mat-toolbar> -->
 
-    <!-- Main Scrollable Content -->
     <div class="content-wrapper">
-      <div class="test-container " *ngIf="questions.length">
-      <mat-card class="quiz-header shadow-sm mb-5" style="padding: 24px; border-radius: 16px;">
-  <div class="row align-items-center">
-
-    <!-- Left: Title & Description -->
-    <div class="col-md-8 col-sm-12 mb-4">
-      <h2 class="quiz-title mb-2">{{ quizTitle }}</h2>
-      <p class="quiz-description mb-3">{{ description }}</p>
-    </div>
-    
-    <!-- Right: Marks Info -->
-    <div class="col-md-4 col-sm-12 text-md-right text-sm-left mt-sm-3 mt-md-0 score-panel p-3" style=" border-radius: 12px;">
-      <p style="margin: 0; font-size: 15px;"><strong>Total Marks:</strong> {{ totalMarks }}</p>
-      <p style="margin: 0; font-size: 15px;"><strong>Score to Pass:</strong> {{ scoreToPass }}</p>
-    </div>
-    
-  </div>
-  <p class="instructions text-muted ">Answer the following questions:</p>
-</mat-card>
-
+      <div class="test-container" *ngIf="questions.length">
+        <mat-card class="quiz-header mat-elevation-z4">
+          <div class="quiz-header-row">
+            <div>
+              <h2>{{ quizTitle }}</h2>
+              <p class="description">{{ description }}</p>
+              <p>Answer the following questions:</p>
+            </div>
+            <div class="score-info">
+              <p><strong>Total Marks:</strong> {{ totalMarks }}</p>
+              <p><strong>Score to Pass:</strong> {{ scoreToPass }}</p>
+            </div>
+          </div>
+        </mat-card>
 
         <form (ngSubmit)="submitQuiz()">
           <div *ngFor="let question of questions; let i = index">
             <mat-card class="question-card">
               <h3>Q{{ i + 1 }}: {{ question.questionText }}</h3>
-
               <mat-radio-group
                 [name]="'question_' + question.id"
-                (change)="selectAnswer(question.id, $event.value)"
-              >
+                (change)="selectAnswer(question.id, $event.value)">
                 <mat-radio-button
                   *ngFor="let option of question.options"
-                  [value]="option.value"
-                  class="option-button"
-                >
+                  [value]="option.label"
+                  class="option-button">
                   {{ option.label }}. {{ option.value }}
                 </mat-radio-button>
               </mat-radio-group>
@@ -55,7 +36,7 @@
           </div>
 
           <div class="submit-button">
-            <button mat-raised-button color="primary" type="submit">
+            <button mat-raised-button color="accent" type="submit">
               Submit
             </button>
           </div>
@@ -64,3 +45,23 @@
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
+
+<!-- Modal Template -->
+<ng-template #resultDialog>
+  <h2 mat-dialog-title class="text-center text-primary">Quiz Result</h2>
+  <mat-dialog-content class="mat-typography">
+    <p><strong>Title:</strong> {{ resultData?.quizTitle }}</p>
+    <p><strong>Total Marks:</strong> {{ resultData?.totalMarks }}</p>
+    <p><strong>Score Obtained:</strong> {{ resultData?.obtainedScore }}</p>
+    <p><strong>Percentage:</strong> {{ resultData?.percentage }}%</p>
+    <p>
+      <strong>Status:</strong>
+      <span [ngClass]="resultData?.passed ? 'text-success' : 'text-danger'">
+        {{ resultData?.passed ? 'Passed ✅' : 'Failed ❌' }}
+      </span>
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" (click)="proceed()">Proceed to Dashboard</button>
+  </mat-dialog-actions>
+</ng-template>

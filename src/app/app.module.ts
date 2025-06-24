@@ -43,7 +43,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatRadioModule } from '@angular/material/radio'
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
+import { MatDialogModule } from '@angular/material/dialog';
 import { SharedLayoutComponent } from './shared-layout/shared-layout.component';
 
 
@@ -86,8 +86,9 @@ import { SharedLayoutComponent } from './shared-layout/shared-layout.component';
     MatCardModule,
     MatTableModule,
     MatRadioModule,
+    MatDialogModule,
     MatSelectModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

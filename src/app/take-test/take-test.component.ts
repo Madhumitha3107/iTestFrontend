@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../api.service';
 import { ToastService } from '../toast.service';
-import { switchMap, map, catchError, tap } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
+import { map, tap, catchError } from 'rxjs/operators';
+import { UserService } from '../userservice.service';
 
 @Component({
   selector: 'app-take-test',
@@ -19,11 +21,18 @@ export class TakeTestComponent implements OnInit {
   totalMarks: number = 0;
   scoreToPass: number = 0;
 
+  // Store result for modal
+  resultData: any = null;
+
+  @ViewChild('resultDialog') resultDialog!: TemplateRef<any>;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private api: ApiService,
-    private toast: ToastService
+    private toast: ToastService,
+    private dialog: MatDialog, 
+    private userservice:UserService
   ) {}
 
   ngOnInit(): void {
@@ -69,27 +78,42 @@ export class TakeTestComponent implements OnInit {
   }
 
   submitQuiz(): void {
-    const submission = this.questions.map(q => ({
-      questionId: q.id,
-      selectedAnswer: this.answers[q.id] || null
-    }));
+    const userId = this.userservice.getUserId(); 
+    if (!userId) {
+      this.toast.show('User not logged in. Please log in again.', 'Close');
+      return;
+    }
 
-    this.api.user.submitQuiz(this.quizId, { answers: submission }).pipe(
+    const submission = {
+      userId: userId,
+      answers: this.questions.map(q => ({
+        questionId: q.id,
+        selectedOption: this.answers[q.id] || ''
+      }))
+    };
+
+    this.api.user.submitQuiz(this.quizId, submission).pipe(
       tap(res => {
         if (res.success) {
-          this.toast.show('Quiz submitted successfully', 'Close');
-          this.router.navigate(['/result'], {
-            state: { result: res.data }
+          this.resultData = res.data;
+          this.dialog.open(this.resultDialog, {
+            width: '500px',
+            disableClose: true
           });
         } else {
           this.toast.show(res.message || 'Submission failed.', 'Close');
         }
       }),
       catchError(err => {
-        console.error('Submission error:', err);
+        console.error('Error from API:', err);
         this.toast.show('Error submitting quiz.', 'Close');
         return of(null);
       })
     ).subscribe();
+  }
+
+  proceed(): void {
+    this.dialog.closeAll();
+    this.router.navigate(['/dashboard']);
   }
 }

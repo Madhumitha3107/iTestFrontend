@@ -88,7 +88,7 @@ user = {
       this.get(`User/${id}/available-quizzes`),
     
     submitQuiz: (quizId: number, submission: any): Observable<any> => 
-      this.post(`User/${quizId}/submit`, submission)
+      this.post(`Quiz/${quizId}/submit`, submission)
   };
 
 
