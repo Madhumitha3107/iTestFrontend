@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../api.service';
 import { ToastService } from '../toast.service';
-import { catchError, tap, map } from 'rxjs/operators';
+import { UserService } from '../userservice.service';
+import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-
+import { ChartOptions, TooltipItem } from 'chart.js';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,47 +16,155 @@ import { of } from 'rxjs';
 export class DashboardComponent implements OnInit {
   upcomingQuizzes: any[] = [];
   quizHistory: any[] = [];
+  stats: any;
+  currentPage: number = 1;
+  totalPages: number = 1;
+  limit: number = 10;
+  userId!: number;
+
+  lineChartData = {
+    labels: [] as string[],
+    datasets: [
+      {
+        data: [] as number[],
+        label: 'Score',
+        borderColor: '#3f51b5',
+        backgroundColor: 'rgba(63,81,181,0.2)',
+        tension: 0.3,
+        fill: true
+      }
+    ]
+  };
+
+  lineChartOptions: ChartOptions<'line'> = {
+    responsive: true,
+    plugins: {
+      legend: { display: true, position: 'bottom' },
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem: TooltipItem<'line'>) => {
+            const score = tooltipItem.raw;
+            const quizTitle = this.stats?.lineGraph[tooltipItem.dataIndex]?.quizTitle || '';
+            return `${quizTitle}: ${score}`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        title: { display: true, text: 'Attempted Date' },
+        ticks: {
+          callback: function (val: any) {
+            const label = this.getLabelForValue(val);
+            const date = new Date(label);
+            return `${date.getDate()} ${date.toLocaleString('default', { month: 'short' })}`;
+          }
+        }
+      },
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: 'Score' }
+      }
+    }
+  };
+
+  pieChartLabels = ['Passed', 'Failed'];
+  pieChartData: number[] = [];
+  pieChartColors = ['#4caf50', '#f44336'];
+
+  pieChartOptions: ChartOptions<'pie'> = {
+    responsive: true,
+    plugins: {
+      legend: { display: true, position: 'bottom' }
+    }
+  };
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private api: ApiService,
     private toast: ToastService,
- 
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
+    this.userId = this.userService.getUserId()!;
+    if (!this.userId) return;
 
-    this.api.quiz.getAll().pipe(
-      map((res: any[]) => {
-        const today = new Date();
-        return res
-          .filter(q => new Date(q.dueDate) >= today)
-          .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
-          .slice(0, 3);
+    this.loadStats();
+    this.loadUpcomingQuizzes();
+
+    this.route.paramMap.subscribe(paramMap => {
+      const pageParam = paramMap.get('page');
+      this.currentPage = pageParam ? parseInt(pageParam, 10) : 1;
+      this.loadQuizHistory(this.currentPage);
+      window.scrollTo(0, 0);
+    });
+  }
+
+  loadStats(): void {
+    this.api.user.getUserStats(this.userId).pipe(
+      tap(res => {
+        if (res.success) {
+          this.stats = res.data;
+          const line = res.data.lineGraph;
+          this.lineChartData.labels = line.map((d: any) => d.attemptedAt);
+          this.lineChartData.datasets[0].data = line.map((d: any) => d.score);
+          this.pieChartData = [res.data.pieChart.passed, res.data.pieChart.failed];
+        }
       }),
-      tap((quizzes) => {
-        this.upcomingQuizzes = quizzes;
-        this.toast.show('Upcoming quizzes loaded successfully.', 'Close');
+      catchError(() => {
+        this.toast.show('Failed to load user stats', 'Close');
+        return of(null);
+      })
+    ).subscribe();
+  }
+
+  loadUpcomingQuizzes(): void {
+    this.api.get<any>(`User/${this.userId}/recent-quizzes`).pipe(
+      tap(res => {
+        if (res.success && res.data) {
+          this.upcomingQuizzes = res.data.slice(0, 4);
+        }
       }),
-      catchError(err => {
-        const message = err?.error?.message || 'Failed to load quizzes.';
-        this.toast.show(message, 'Close');
+      catchError(() => {
+        this.toast.show('Failed to load upcoming quizzes', 'Close');
         return of([]);
       })
     ).subscribe();
+  }
 
-    // You can also fetch this history from an API if needed
-    this.quizHistory = [
-      { name: 'History of India', marks: 18, total: 20 },
-      { name: 'Chemistry Fundamentals', marks: 15, total: 20 },
-      { name: 'English Grammar', marks: 19, total: 20 }
-    ];
+  loadQuizHistory(page: number): void {
+    const params = new HttpParams().set('limit', this.limit.toString());
+
+    this.api.get<any>(`User/user-history/${this.userId}/page/${page}`, params).pipe(
+      tap(res => {
+        if (res.success) {
+          this.quizHistory = res.data.map((item: any) => ({
+            name: item.quizTitle,
+            marks: item.score,
+            total: item.totalMarks,
+            passed: item.passed
+          }));
+          this.totalPages = res.totalPages;
+        }
+      }),
+      catchError(() => {
+        this.toast.show('Failed to load quiz history', 'Close');
+        return of(null);
+      })
+    ).subscribe();
+  }
+
+  changePage(delta: number): void {
+    const nextPage = this.currentPage + delta;
+    if (nextPage >= 1 && nextPage <= this.totalPages) {
+      this.router.navigate(['/dashboard', nextPage]);
+    }
   }
 
   confirmAndNavigate(quizId: number): void {
-    if (confirm('Are you sure you want to take this test?')) {
-      this.router.navigate(['/take-test', quizId]);
-    }
+    this.router.navigate(['/take-test', quizId]);
   }
 
   logout(): void {

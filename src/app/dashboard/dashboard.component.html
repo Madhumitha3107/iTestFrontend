@@ -1,39 +1,51 @@
-<mat-sidenav-container class="dashboard-container ">
-  <!-- Sidebar -->
-  <!-- <mat-sidenav mode="side" opened class="sidenav">
-    <mat-toolbar color="primary">ITest</mat-toolbar>
-    <mat-nav-list>
-      <a mat-list-item routerLink="/dashboard">Dashboard</a>
-      <a mat-list-item routerLink="/quiz">Quiz</a>
-    </mat-nav-list>
-  </mat-sidenav> -->
-
-  <!-- Main Content -->
+<mat-sidenav-container class="dashboard-container">
   <mat-sidenav-content class="overflow-hidden">
-    <!-- Top Navbar -->
-    <!-- <mat-toolbar color="primary" class="toolbar">
-      <span class="toolbar-spacer"></span>
-      <button mat-button [matMenuTriggerFor]="profileMenu">
-        <mat-icon>account_circle</mat-icon> Profile
-      </button>
-      <mat-menu #profileMenu="matMenu">
-        <button mat-menu-item routerLink="/profile-edit">
-          <mat-icon>edit</mat-icon> Edit Profile
-        </button>
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>logout</mat-icon> Logout
-        </button>
-      </mat-menu>
-    </mat-toolbar> -->
-
     <div class="main-content">
-      <!-- Upcoming Quizzes -->
+
+      <!-- USER SUMMARY -->
+      <h2 class="section-title">User Summary</h2>
+      <div class="stats-container" *ngIf="stats">
+        <div class="stats-grid">
+          <mat-card class="stat-card">Total Attempted: {{ stats.statsSummary.totalQuizzesAttempted }}</mat-card>
+          <mat-card class="stat-card">Passed: {{ stats.statsSummary.passedQuizzes }}</mat-card>
+          <mat-card class="stat-card">Failed: {{ stats.statsSummary.failedQuizzes }}</mat-card>
+          <mat-card class="stat-card">Correct Answers: {{ stats.statsSummary.totalCorrectAnswers }}</mat-card>
+        </div>
+
+        <!-- CHARTS -->
+        <div class="charts-grid">
+          <mat-card class="chart-card">
+            <h4>Line Chart - Score Over Time</h4>
+            <canvas baseChart
+                    [data]="lineChartData"
+                    [options]="lineChartOptions"
+                    [type]="'line'">
+            </canvas>
+          </mat-card>
+
+          <mat-card class="chart-card">
+            <h4>Pie Chart - Pass vs Fail</h4>
+            <canvas baseChart
+                    [data]="{ labels: pieChartLabels, datasets: [{ data: pieChartData, backgroundColor: pieChartColors }] }"
+                    [options]="pieChartOptions"
+                    [type]="'pie'">
+            </canvas>
+          </mat-card>
+        </div>
+      </div>
+
+      <!-- UPCOMING QUIZZES -->
+       <div class="section-title-row" *ngIf="upcomingQuizzes.length > 0">
       <h2 class="section-title">Upcoming Quizzes</h2>
+      <a class="view-more-link" routerLink="/quiz">View More</a>
+      </div>
+      <h2 class="section-title" *ngIf="upcomingQuizzes.length === 0">Upcoming Quizzes</h2>
       <div class="upcoming-quiz-container">
         <mat-card *ngFor="let quiz of upcomingQuizzes">
-          <mat-card-title>{{ quiz.name }}</mat-card-title>
+          <mat-card-title>{{ quiz.title }}</mat-card-title>
           <mat-card-content>
-            <p><strong>Due Date:</strong> {{ quiz.dueDate | date: 'longDate' }}</p>
+            <p><strong>Description:</strong> {{ quiz.description }}</p>
+            <p><strong>Scheduled At:</strong> {{ quiz.scheduledAt | date: 'short' }}</p>
           </mat-card-content>
           <mat-card-actions>
             <button mat-raised-button color="primary" (click)="confirmAndNavigate(quiz.id)">
@@ -42,20 +54,21 @@
           </mat-card-actions>
         </mat-card>
       </div>
+      <p *ngIf="upcomingQuizzes.length === 0" class="no-data-text">No upcoming quizzes.</p>
 
-      <!-- Quiz History -->
+      <!-- QUIZ HISTORY -->
       <h3 class="section-title">Quiz History</h3>
-
       <div class="quiz-history" *ngIf="quizHistory.length > 0; else noHistory">
         <table mat-table [dataSource]="quizHistory" class="mat-elevation-z2 history-table">
+
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Quiz Name </th>
-            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            <td mat-cell *matCellDef="let element"> {{ element.name }} </td>
           </ng-container>
 
           <ng-container matColumnDef="marks">
             <th mat-header-cell *matHeaderCellDef> Marks </th>
-            <td mat-cell *matCellDef="let element"> {{element.marks}} / {{element.total}} </td>
+            <td mat-cell *matCellDef="let element"> {{ element.marks }} / {{ element.total }} </td>
           </ng-container>
 
           <ng-container matColumnDef="percentage">
@@ -64,15 +77,34 @@
               {{ (element.marks / element.total * 100) | number:'1.0-0' }}%
             </td>
           </ng-container>
+          
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef> Status </th>
+            <td mat-cell *matCellDef="let element">
+              <span [ngClass]="element.passed ? 'pass-status' : 'fail-status'">
+                {{ element.passed ? 'Pass' : 'Fail' }}
+              </span>
+            </td>
+          </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="['name', 'marks', 'percentage']"></tr>
-          <tr mat-row *matRowDef="let row; columns: ['name', 'marks', 'percentage'];"></tr>
+          <tr mat-header-row *matHeaderRowDef="['name', 'marks', 'percentage','status']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['name', 'marks', 'percentage','status'];"></tr>
         </table>
+
+        <!-- PAGINATION -->
+        <div class="pagination-controls-wrapper" *ngIf="totalPages > 1">
+          <div class="pagination-controls">
+            <button mat-button (click)="changePage(-1)" [disabled]="currentPage === 1">« Prev</button>
+            <span>Page {{ currentPage }} of {{ totalPages }}</span>
+            <button mat-button (click)="changePage(1)" [disabled]="currentPage === totalPages">Next »</button>
+          </div>
+        </div>
       </div>
 
       <ng-template #noHistory>
-        <p style="text-align:center; color: gray; font-style: italic;">No quiz history available.</p>
+        <p class="no-data-text">No quiz history available.</p>
       </ng-template>
+
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

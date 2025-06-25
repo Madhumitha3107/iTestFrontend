@@ -6,6 +6,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 import { HttpClientModule } from '@angular/common/http';
+import { NgChartsModule } from 'ng2-charts';
+
+
 
 // components
 import { LoginComponent } from './login/login.component';
@@ -89,6 +92,7 @@ import { SharedLayoutComponent } from './shared-layout/shared-layout.component';
     MatDialogModule,
     MatSelectModule,
     MatSnackBarModule,
+    NgChartsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

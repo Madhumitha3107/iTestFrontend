@@ -7,14 +7,18 @@ export class UserService {
   private userId: number | null = null;
   private email: string = '';
   private fullName: string = '';
+  private country: string = '';
+  private phoneNumber: string = '';
 
   constructor() {}
 
   // Save user data
-  setUserInfo(user: { id: number; email: string; fullName: string }): void {
+  setUserInfo(user: { id: number; email: string; fullName: string,country:string,phoneNumber:string }): void {
     this.userId = user.id;
     this.email = user.email;
     this.fullName = user.fullName;
+    this.country = user.country;
+    this.phoneNumber = user.phoneNumber;
   }
 
   getUserId(): number | null {

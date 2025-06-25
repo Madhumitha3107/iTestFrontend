@@ -11,7 +11,7 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   // Base GET method
-  private get<T>(url: string, params?: HttpParams): Observable<T> {
+  public get<T>(url: string, params?: HttpParams): Observable<T> {
     return this.http.get<T>(`${this.API_ROOT}${url}`, {
       params,
       withCredentials: true
@@ -73,7 +73,7 @@ export class ApiService {
 
 user = {
     updateProfile: (userId: number, profileData: any): Observable<any> => 
-      this.put(`User/${userId}/profile`, profileData),
+      this.patch(`User/${userId}/profile`, profileData),
     
     getUserStats: (userId: number): Observable<any> => 
       this.get(`User/${userId}/stats`),
@@ -88,7 +88,15 @@ user = {
       this.get(`User/${id}/available-quizzes`),
     
     submitQuiz: (quizId: number, submission: any): Observable<any> => 
-      this.post(`Quiz/${quizId}/submit`, submission)
+      this.post(`Quiz/${quizId}/submit`, submission),
+
+    getUserHistory: (userId: number, page: number, limit: number = 10) =>
+    this.get(`User/user-history/${userId}/page/${page}`, new HttpParams().set('limit', limit.toString())),
+
+    getRecentQuizzes: (userId: number): Observable<any> =>
+    this.get(`User/${userId}/recent-quizzes`),
+
+
   };
 
 

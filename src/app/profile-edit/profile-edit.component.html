@@ -1,36 +1,9 @@
-<!-- <p>profile-edit works!</p> -->
-
-
-  <!-- <mat-sidenav mode="side" opened class="sidenav" fixedInViewport>
-    <mat-toolbar color="primary">iTest</mat-toolbar>
-    <mat-nav-list>
-      <a mat-list-item routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-      <a mat-list-item routerLink="/quiz" routerLinkActive="active">Quiz</a>
-    </mat-nav-list>
-  </mat-sidenav> -->
-
-  
-    <!-- <mat-toolbar color="primary" class="top-toolbar fixed-toolbar">
-      <span class="header-title">Edit Profile</span>
-      <span class="spacer"></span>
-      <button mat-button [matMenuTriggerFor]="profileMenu">
-        <mat-icon>account_circle</mat-icon> Admin
-      </button>
-      <mat-menu #profileMenu="matMenu">
-        <button mat-menu-item><mat-icon>edit</mat-icon> Edit Profile</button>
-        <button mat-menu-item><mat-icon>logout</mat-icon> Logout</button>
-      </mat-menu>
-    </mat-toolbar> -->
- 
-<!-- Main Content After Shared Layout -->
- 
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav-content>
     <div class="main-content">
-      
+
       <mat-card class="profile-card">
-        
-        <!-- Profile Image Centered -->
+        <!-- Profile Image -->
         <div class="profile-image-container">
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"
@@ -39,11 +12,10 @@
           />
         </div>
 
-        <!-- Profile Form -->
+        <!-- Form -->
         <form #profileForm="ngForm" (ngSubmit)="onSubmit(profileForm)" class="profile-form">
-          
 
-          <!-- Email -->
+          <!-- Email (disabled) -->
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Email</mat-label>
             <input matInput [value]="profileData.email" disabled />
@@ -62,7 +34,7 @@
               #nameRef="ngModel"
             />
             <mat-error *ngIf="nameRef.errors?.['required'] && nameRef.touched">Name is required</mat-error>
-            <mat-error *ngIf="nameRef.errors?.['pattern'] && nameRef.touched">Only alphabets allowed</mat-error>
+            <mat-error *ngIf="nameRef.errors?.['pattern'] && nameRef.touched">Only letters allowed</mat-error>
           </mat-form-field>
 
           <!-- Mobile -->
@@ -80,7 +52,7 @@
               #mobileRef="ngModel"
             />
             <mat-error *ngIf="mobileRef.errors?.['required'] && mobileRef.touched">Mobile is required</mat-error>
-            <mat-error *ngIf="mobileRef.errors?.['pattern'] && mobileRef.touched">Enter 10-digit mobile number</mat-error>
+            <mat-error *ngIf="mobileRef.errors?.['pattern'] && mobileRef.touched">Enter 10-digit number</mat-error>
           </mat-form-field>
 
           <!-- Country -->
@@ -113,7 +85,7 @@
             <mat-error *ngIf="genderRef.errors?.['required'] && genderRef.touched">Gender is required</mat-error>
           </mat-form-field>
 
-          <!-- Submit Button -->
+          <!-- Submit -->
           <div class="button-container">
             <button mat-raised-button color="primary" type="submit" [disabled]="!profileForm.valid">
               Update Profile

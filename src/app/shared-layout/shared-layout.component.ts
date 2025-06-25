@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { LOCAL_STORAGE } from '../local-storage.token';
+import { UserService } from '../userservice.service';
 @Component({
   selector: 'app-shared-layout',
   templateUrl: './shared-layout.component.html',
@@ -11,7 +13,7 @@ export class SharedLayoutComponent {
   isSmallScreen: boolean = false;
   pageTitle: string = '';
 
-  constructor(private router: Router,private breakpointObserver: BreakpointObserver) {
+  constructor(private router: Router,private breakpointObserver: BreakpointObserver, @Inject(LOCAL_STORAGE) private localStorage: Storage,private userService: UserService) {
     this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
       this.isSmallScreen = result.matches;
     });
@@ -21,6 +23,13 @@ export class SharedLayoutComponent {
         const url = this.router.url;
         this.setPageTitle(url);
       });
+  }
+
+  logOut() {
+   
+    this.localStorage.removeItem('user');
+    this.userService.clearUserInfo();
+    this.router.navigate(['/login']);
   }
 
   setPageTitle(url: string) {

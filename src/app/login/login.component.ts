@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ApiService } from '../api.service';
 import { UserService } from '../userservice.service';
+import { ToastService } from '../toast.service';
+import { LOCAL_STORAGE } from '../local-storage.token';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +22,9 @@ export class LoginComponent {
   constructor(
     private router: Router,
     private api: ApiService,
-    private userService: UserService
+    private userService: UserService,
+    @Inject(LOCAL_STORAGE) private localStorage: Storage,
+    private toast: ToastService
   ) {}
 
   onCaptchaResolved(token: string) {
@@ -49,21 +53,25 @@ export class LoginComponent {
             this.userService.setUserInfo({
               id: user.id,
               email: user.email,
-              fullName: user.fullName
+              fullName: user.fullName,
+              country: user.country,
+              phoneNumber: user.phoneNumber
             });
-            this.router.navigate(['/dashboard']);
+            this.localStorage.setItem('user', JSON.stringify(user));
+            this.toast.show('Login successful!', 'Close');
+            this.router.navigate(['/dashboard',1]);
           } else {
-            alert(res?.message || 'Login failed');
+            this.toast.show(res?.message || 'Login failed', 'Close');
           }
         }),
         catchError((err) => {
           console.error('Login failed:', err);
-          alert('An error occurred during login');
+          this.toast.show('An error occurred during login', 'Close');
           return of(null);
         })
       ).subscribe();
     } else {
-      alert('Please fill all required fields correctly.');
+      this.toast.show('Please fill all required fields correctly.', 'Close');
     }
   }
 

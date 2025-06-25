@@ -22,12 +22,13 @@ const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   // Protected routes with shared layout
-  {
+ {
     path: '',
     component: SharedLayoutComponent,
-    
+    canActivate: [AuthGuard],         
     children: [
-      { path: 'dashboard', component: DashboardComponent },
+      { path: 'dashboard', pathMatch: 'full', redirectTo: 'dashboard/1' },
+      { path: 'dashboard/:page', component: DashboardComponent },
       { path: 'quiz', component: QuizComponent },
       { path: 'profile-edit', component: ProfileEditComponent },
       { path: 'take-test/:id', component: TakeTestComponent },

@@ -1,25 +1,65 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../api.service';
+import { UserService } from '../userservice.service';
+import { ToastService } from '../toast.service';
 
 @Component({
   selector: 'app-profile-edit',
   templateUrl: './profile-edit.component.html',
   styleUrls: ['./profile-edit.component.css']
 })
-export class ProfileEditComponent {
+export class ProfileEditComponent implements OnInit {
   profileData = {
-    email: 'akash@gmail.com',
+    email: '',
     name: '',
     mobile: '',
     country: '',
     gender: ''
   };
 
-  onSubmit(form: any) {
+  userId!: number;
+
+  constructor(
+    private api: ApiService,
+    private userService: UserService,
+    private toast: ToastService
+  ) {}
+
+  ngOnInit(): void {
+  this.userId = this.userService.getUserId()!;
+  if (!this.userId) return;
+
+  this.api.get<any>(`User/${this.userId}/profile`).subscribe(res => {
+    if (res.success && res.data) {
+      const data = res.data;
+
+      this.profileData.name = (data.fullName && data.fullName !== 'string') ? data.fullName : '';
+      this.profileData.mobile = (data.phoneNumber && data.phoneNumber !== 'string') ? data.phoneNumber : '';
+      this.profileData.country = (data.country && data.country !== 'string') ? data.country : '';
+      this.profileData.gender = (data.gender && data.gender !== 'string') ? data.gender : '';
+      this.profileData.email = this.userService.getEmail() || '';
+    }
+  });
+}
+
+  onSubmit(form: any): void {
     if (form.valid) {
-      console.log('Updated Profile:', this.profileData);
-      alert('Profile updated successfully!');
+      const payload = {
+        fullName: this.profileData.name,
+        phoneNumber: this.profileData.mobile,
+        country: this.profileData.country,
+        gender: this.profileData.gender
+      };
+
+      this.api.user.updateProfile(this.userId, payload).subscribe(res => {
+        if (res.success) {
+          this.toast.show('Profile updated successfully!', 'Close');
+        } else {
+          this.toast.show('Failed to update profile', 'Close');
+        }
+      });
     } else {
-      console.warn('Form is invalid');
+      this.toast.show('Please fill all fields correctly', 'Close');
     }
   }
 }
