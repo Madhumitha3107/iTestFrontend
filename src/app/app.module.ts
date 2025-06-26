@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 import { HttpClientModule } from '@angular/common/http';
 import { NgChartsModule } from 'ng2-charts';
-
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 // components
@@ -49,7 +49,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SharedLayoutComponent } from './shared-layout/shared-layout.component';
 
-
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -69,6 +69,14 @@ import { SharedLayoutComponent } from './shared-layout/shared-layout.component';
 
   imports: [
     BrowserModule,
+    BrowserAnimationsModule, 
+    NgbModule,
+     ToastrModule.forRoot({
+      positionClass: 'toast-top-right',
+      enableHtml: true,
+      timeOut: 3000,
+      preventDuplicates: true,
+    }),
     LayoutModule,
     AppRoutingModule,
     FormsModule,
@@ -81,7 +89,6 @@ import { SharedLayoutComponent } from './shared-layout/shared-layout.component';
     MatToolbarModule,
     MatProgressBarModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule, 
     MatSidenavModule,
     MatFormFieldModule,
     MatInputModule,

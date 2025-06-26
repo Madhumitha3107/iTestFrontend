@@ -7,6 +7,7 @@ import { ApiService } from '../api.service';
 import { UserService } from '../userservice.service';
 import { ToastService } from '../toast.service';
 import { LOCAL_STORAGE } from '../local-storage.token';
+import { AppToasterService } from '../services/toaster.service';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,7 @@ export class LoginComponent {
     private api: ApiService,
     private userService: UserService,
     @Inject(LOCAL_STORAGE) private localStorage: Storage,
-    private toast: ToastService
+    private toast: AppToasterService
   ) {}
 
   onCaptchaResolved(token: string) {
@@ -58,20 +59,20 @@ export class LoginComponent {
               phoneNumber: user.phoneNumber
             });
             this.localStorage.setItem('user', JSON.stringify(user));
-            this.toast.show('Login successful!', 'Close');
+            this.toast.success('Login successful');
             this.router.navigate(['/dashboard',1]);
           } else {
-            this.toast.show(res?.message || 'Login failed', 'Close');
+            this.toast.error(res?.message || 'Login failed', 'Close');
           }
         }),
         catchError((err) => {
           console.error('Login failed:', err);
-          this.toast.show('An error occurred during login', 'Close');
+          this.toast.error(err.error.message);
           return of(null);
         })
       ).subscribe();
     } else {
-      this.toast.show('Please fill all required fields correctly.', 'Close');
+      this.toast.info('Please fill all required fields correctly.', 'Close');
     }
   }
 
