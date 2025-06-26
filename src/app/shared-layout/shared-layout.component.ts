@@ -13,7 +13,7 @@ export class SharedLayoutComponent {
   isSmallScreen: boolean = false;
   pageTitle: string = '';
 
-  constructor(private router: Router,private breakpointObserver: BreakpointObserver, @Inject(LOCAL_STORAGE) private localStorage: Storage,private userService: UserService) {
+  constructor(private router: Router,private breakpointObserver: BreakpointObserver, @Inject(LOCAL_STORAGE) private localStorage: Storage,public userService: UserService) {
     this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
       this.isSmallScreen = result.matches;
     });

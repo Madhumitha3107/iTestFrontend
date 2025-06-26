@@ -1,83 +1,105 @@
-<mat-card class="login-card">
-  <h2 class="login-title">User Login</h2>
-
-  <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
-
-    <!-- Email Field -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Email</mat-label>
-      <input
-        matInput
-        type="email"
-        name="email"
-        [(ngModel)]="email"
-        required
-        email
-        #emailRef="ngModel"
-      />
-      <mat-error *ngIf="emailRef.errors?.['required']">
-        Email is required
-      </mat-error>
-      <mat-error *ngIf="emailRef.errors?.['email']">
-        Please enter a valid email address
-      </mat-error>
-    </mat-form-field>
-
-    <!-- Password Field -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Password</mat-label>
-      <input
-        matInput
-        type="password"
-        name="password"
-        [(ngModel)]="password"
-        required
-        minlength="8"
-        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[.@$!%*?#])[A-Za-z\d.@$!%*?#]{8,}$"
-        #passwordRef="ngModel"
-      />
-      <mat-error *ngIf="passwordRef.errors?.['required']">
-        Password is required
-      </mat-error>
-
-      <mat-error *ngIf="passwordRef.errors?.['pattern']">
-        Password must include (8 character) uppercase, lowercase,special character and number
-      </mat-error>
-    </mat-form-field>
-
-    <br />
-
+<div class="d-flex justify-content-center align-items-center min-vh-100 bg-gradient" style="background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);">
+  <div class="card border-0 shadow-lg p-0 overflow-hidden" style="max-width: 420px; width: 100%; border-radius: 2rem;">
     
-    <!-- Forgot Password Link -->
-    <div class="forgotpassword-link">
-      <a style="cursor: pointer;" (click)="onForgotPassword()">Forgot Password?</a>
+    <!-- Top section -->
+    <div class="bg-primary text-white text-center py-4">
+      <i class="bi bi-shield-lock-fill fs-1"></i>
+      <h2 class="fw-bold mt-2 mb-0">Welcome Back, User</h2>
+      <p class="mb-0 small opacity-75">Sign in to continue to your dashboard</p>
     </div>
 
-    <!-- CAPTCHA -->
-    <div class="stylecap">
-      <re-captcha
-        siteKey="6LdBiWkrAAAAAMFUY1Hjik1EgLzBqT-OQoVeFOMY"
-        (resolved)="onCaptchaResolved($event)">
-      </re-captcha>
-      <mat-error *ngIf="captchaError">Please verify that you are not a robot.</mat-error>
-    </div>
+    <!-- Login Form -->
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" autocomplete="off" novalidate class="p-4">
 
-    <!-- Submit Button -->
-    <div class="button-wrapper">
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="!loginForm.form.valid || !captchaToken"
-      >
-        Login
-      </button>
-    </div>
+      <!-- Email Field -->
+      <div class="mb-3">
+        <label for="email" class="form-label fw-semibold">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+          email
+          #emailRef="ngModel"
+          placeholder="Enter your email"
+        />
+        <div *ngIf="emailRef.errors?.['required'] && emailRef.touched" class="invalid-feedback d-block">
+          Email is required
+        </div>
+        <div *ngIf="emailRef.errors?.['email'] && emailRef.touched" class="invalid-feedback d-block">
+          Please enter a valid email address
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="mb-3">
+        <label for="password" class="form-label fw-semibold">Password</label>
+        <div class="input-group">
+          <input
+            [type]="hidePassword ? 'password' : 'text'"
+            class="form-control"
+            id="password"
+            name="password"
+            [(ngModel)]="password"
+            required
+            minlength="8"
+            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[.@$!%*?#])[A-Za-z\d.@$!%*?#]{8,}$"
+            #passwordRef="ngModel"
+            placeholder="Enter your password"
+          />
+          <button type="button" class="btn btn-outline-secondary" (click)="hidePassword = !hidePassword" tabindex="-1">
+            <i class="bi" [ngClass]="hidePassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+          </button>
+        </div>
+        <div *ngIf="passwordRef.errors?.['required'] && passwordRef.touched" class="invalid-feedback d-block">
+          Password is required
+        </div>
+        <div *ngIf="passwordRef.errors?.['pattern'] && passwordRef.touched" class="invalid-feedback d-block">
+          Password must include (8 character) uppercase, lowercase, number, and special character
+        </div>
+      </div>
+
+      <!-- Forgot Password -->
+      <div class="mb-3 text-end">
+        <a style="cursor: pointer;" class="link-secondary small" (click)="onForgotPassword()">Forgot Password?</a>
+      </div>
+
+      <!-- CAPTCHA -->
+      <div class="mb-4 d-flex justify-content-center">
+        <div>
+          <re-captcha
+            siteKey="6LdBiWkrAAAAAMFUY1Hjik1EgLzBqT-OQoVeFOMY"
+            (resolved)="onCaptchaResolved($event)">
+          </re-captcha>
+          <div *ngIf="captchaError" class="invalid-feedback d-block mt-2 text-center">
+            <i class="bi bi-robot me-1"></i> Please verify that you are not a robot
+          </div>
+        </div>
+      </div>
+
+      <!-- Login Button -->
+      <div class="d-grid mb-3">
+        <button
+          type="submit"
+          class="btn btn-primary btn-lg rounded-pill shadow-sm"
+          [disabled]="!loginForm.form.valid || !captchaToken"
+        >
+          <i class="bi bi-box-arrow-in-right me-2"></i>Login
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div class="text-center text-muted mb-3">
+        <span style="letter-spacing: 0.1em;">or</span>
+      </div>
+
+      <!-- Register -->
+      <div class="text-center">
+        <span>Don't have an account?</span>
+        <a class="ms-1 link-primary fw-semibold" style="cursor: pointer;" (click)="onRegister()">Register</a>
+      </div>
     </form>
-
-    <!-- Register Link -->
-    <p class="register-link">
-       Don't have an account?
-    <a (click)="onRegister()">Register</a>
-    </p>
-</mat-card>
+  </div>
+</div>

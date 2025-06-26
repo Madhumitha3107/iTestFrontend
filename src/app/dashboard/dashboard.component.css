@@ -106,3 +106,50 @@
   text-decoration: underline;
 }
 
+/* .upcoming-quizzes-section {
+  margin-top: 20px;
+  margin-bottom: 20px;
+      } */
+
+      .upcoming-quiz-scroll {
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;
+      gap: 1.5rem;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.5rem;
+      scroll-snap-type: x mandatory;
+      }
+
+      .upcoming-quiz-card {
+      min-width: 340px;
+      max-width: 400px;
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 1.08em;
+      }
+
+      .upcoming-quiz-card .card-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 1.25em;
+      }
+
+      @media (max-width: 600px) {
+      .upcoming-quiz-card {
+        min-width: 260px;
+        max-width: 95vw;
+      }
+      }
+
+   /* Remove custom row coloring, let Bootstrap's .table-striped handle it */
+        .quiz-history table tbody tr.bg-secondary.bg-opacity-10,
+        .quiz-history table tbody tr.bg-dark.text-white {
+        background-color: unset !important;
+        color: unset !important;
+        }

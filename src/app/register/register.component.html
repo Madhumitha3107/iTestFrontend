@@ -1,70 +1,119 @@
-<!-- <p>register works!</p> -->
-<mat-card class="register-card">
-  <h2 class="register-title">Register</h2>
+<div class="d-flex justify-content-center align-items-center min-vh-100 bg-gradient" style="background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);">
+  <div class="card border-0 shadow-lg p-0 overflow-hidden" style="max-width: 420px; width: 100%; border-radius: 2rem;">
 
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-
-    <!-- Full Name -->
-    <mat-form-field appearance="fill">
-      <mat-label>Full Name</mat-label>
-      <input matInput formControlName="fullName" />
-      <mat-error *ngIf="registerForm.get('fullName')?.hasError('required')">
-        Full Name is required
-      </mat-error>
-    </mat-form-field>
-
-    <!-- Email -->
-    <mat-form-field appearance="fill">
-      <mat-label>Email</mat-label>
-      <input matInput formControlName="email" />
-      <mat-error *ngIf="registerForm.get('email')?.hasError('required')">
-        Email is required
-      </mat-error>
-      <mat-error *ngIf="registerForm.get('email')?.hasError('email')">
-        Enter a valid email
-      </mat-error>
-    </mat-form-field>
-
-    <!-- Password -->
-    <mat-form-field appearance="fill">
-      <mat-label>Password</mat-label>
-      <input matInput type="password" formControlName="password" />
-      <mat-error *ngIf="registerForm.get('password')?.hasError('required')">
-        Password is required
-      </mat-error>
-      <mat-error *ngIf="registerForm.get('password')?.hasError('pattern')">
-        Password must contain 8+ chars, uppercase, lowercase, digit, and symbol
-      </mat-error>
-    </mat-form-field>
-
-    <!-- Confirm Password -->
-    <mat-form-field appearance="fill">
-      <mat-label>Confirm Password</mat-label>
-      <input matInput type="password" formControlName="confirmPassword" />
-      <mat-error *ngIf="registerForm.get('confirmPassword')?.hasError('required')">
-        Confirm Password is required
-      </mat-error>
-      <mat-error *ngIf="registerForm.get('confirmPassword')?.hasError('passwordMismatch')">
-        Passwords do not match
-      </mat-error>
-    </mat-form-field>
-
-    <!-- reCAPTCHA -->
-    <div class="captcha-wrapper">
-      <re-captcha formControlName="recaptcha" siteKey="6LdBiWkrAAAAAMFUY1Hjik1EgLzBqT-OQoVeFOMY"></re-captcha>
-      <mat-error *ngIf="registerForm.get('recaptcha')?.hasError('required')">
-      </mat-error>
+    <!-- Decorative Header -->
+    <div class="bg-primary text-white text-center py-4">
+      <i class="bi bi-person-plus-fill fs-1"></i>
+      <h2 class="fw-bold text-white mt-2 mb-0">Admin Registration</h2>
+      <p class="mb-0 small opacity-75">Create your admin account</p>
     </div>
 
-    <!-- Register Button -->
-    <div class="button-wrapper">
-      <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid">
-        Register
-      </button>
-    </div>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="p-4" autocomplete="off" novalidate>
 
-    <div class="register-link">
-      Already have an account? <a routerLink="/login">Login</a>
-    </div>
-  </form>
-</mat-card>
+      <!-- Full Name -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Full Name</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="fullName"
+          placeholder="Enter your full name"
+        />
+        <div *ngIf="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid" class="invalid-feedback d-block">
+          <span *ngIf="registerForm.get('fullName')?.hasError('required')">Name is required</span>
+          <span *ngIf="registerForm.get('fullName')?.hasError('minlength')">Minimum 3 characters</span>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          formControlName="email"
+          placeholder="Enter your email"
+        />
+        <div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" class="invalid-feedback d-block">
+          <span *ngIf="registerForm.get('email')?.hasError('required')">Email is required</span>
+          <span *ngIf="registerForm.get('email')?.hasError('email')">Enter a valid email</span>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Password</label>
+        <div class="input-group">
+          <input
+            [type]="hidePassword ? 'password' : 'text'"
+            class="form-control"
+            formControlName="password"
+            placeholder="Create a password"
+          />
+          <button type="button" class="btn btn-outline-secondary" (click)="hidePassword = !hidePassword" tabindex="-1">
+            <i class="bi" [ngClass]="hidePassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+          </button>
+        </div>
+        <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" class="invalid-feedback d-block">
+          <span *ngIf="registerForm.get('password')?.hasError('required')">Password is required</span>
+          <span *ngIf="registerForm.get('password')?.hasError('pattern')">
+            Password must include (8 character) uppercase, lowercase, number, and special character
+          </span>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Confirm Password</label>
+        <div class="input-group">
+          <input
+            [type]="confirmHidePassword ? 'password' : 'text'"
+            class="form-control"
+            formControlName="confirmPassword"
+            placeholder="Re-enter your password"
+          />
+          <button type="button" class="btn btn-outline-secondary" (click)="confirmHidePassword = !confirmHidePassword" tabindex="-1">
+            <i class="bi" [ngClass]="confirmHidePassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+          </button>
+        </div>
+        <div *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid" class="invalid-feedback d-block">
+          <span *ngIf="registerForm.get('confirmPassword')?.hasError('required')">Confirm password is required</span>
+        </div>
+        <div *ngIf="registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched" class="invalid-feedback d-block">
+          Passwords do not match
+        </div>
+      </div>
+
+      <!-- reCAPTCHA -->
+      <div class="mb-4 d-flex justify-content-center">
+        <div>
+          <re-captcha
+            formControlName="recaptcha"
+            siteKey="6LdBiWkrAAAAAMFUY1Hjik1EgLzBqT-OQoVeFOMY">
+          </re-captcha>
+          <div *ngIf="registerForm.get('recaptcha')?.touched && registerForm.get('recaptcha')?.invalid" class="invalid-feedback d-block mt-2 text-center">
+            Please verify that you are not a robot
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="d-grid mb-3">
+        <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm" [disabled]="registerForm.invalid">
+          <i class="bi bi-person-check-fill me-2"></i>Register
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div class="text-center text-muted mb-3">
+        <span style="letter-spacing: 0.1em;">or</span>
+      </div>
+
+      <!-- Login Link -->
+      <div class="text-center">
+        <span>Already have an account?</span>
+        <a class="ms-1 link-primary fw-semibold" routerLink="/login">Login</a>
+      </div>
+    </form>
+  </div>
+</div>

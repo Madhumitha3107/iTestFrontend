@@ -15,6 +15,8 @@ import { AppToasterService } from '../services/toaster.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+  hidePassword: boolean = true;
+
   email: string = '';
   password: string = '';
   captchaToken: string | null = null;
@@ -59,7 +61,7 @@ export class LoginComponent {
               phoneNumber: user.phoneNumber
             });
             this.localStorage.setItem('user', JSON.stringify(user));
-            this.toast.success('Login successful');
+            // this.toast.success('Login successful');
             this.router.navigate(['/dashboard',1]);
           } else {
             this.toast.error(res?.message || 'Login failed', 'Close');

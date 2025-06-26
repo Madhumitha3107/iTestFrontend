@@ -10,7 +10,7 @@
 
   <!-- Main Content Area -->
   <mat-sidenav-content>
-    <!-- Top Navbarjyu fjkhkhjhcg -->
+    <!-- Top Navbarjyu -->
     <!-- <mat-toolbar color="primary" class="toolbar">
       <span class="toolbar-spacer"></span>
       <button mat-button [matMenuTriggerFor]="profileMenu">
@@ -28,24 +28,39 @@
 
     <!-- Main Quiz Content -->
     <div class="main-content">
-      <h2 class="section-title">Available Quizzes</h2>
+  <h2 class="section-title">Available Quizzes</h2>
 
-     <ng-container *ngIf="quizzes$ | async as allQuizzes; else loading">
-  <div class="quiz-grid" *ngIf="allQuizzes.length > 0; else noQuizzes">
-    <mat-card *ngFor="let quiz of allQuizzes" class="quiz-card mat-elevation-z3">
-      <mat-card-header>
-        <mat-card-title>{{ quiz.title }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p><strong>Due Date:</strong> {{ quiz.scheduledAt | date: 'longDate' }}</p>
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-raised-button color="primary" (click)="confirmAndNavigate(quiz.id)">
-          Take Test
-        </button>
-      </mat-card-actions>
-    </mat-card>
-  </div>
+  <ng-container *ngIf="quizzes$ | async as allQuizzes; else loading">
+    <div *ngIf="allQuizzes.length > 0; else noQuizzes">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        <div class="col" *ngFor="let quiz of allQuizzes">
+          <div class="card border-0 shadow-sm rounded-3 h-100 p-0">
+            <div class="card-body shadow-sm px-4 d-flex flex-column justify-content-between h-100">
+
+              <h2 class="card-title mb-2 fw-semibold text-truncate" title="{{ quiz.title }}">
+                {{ quiz.title }}
+              </h2>
+
+              <div class="text-muted mb-4 py-2 text-truncate rounded"
+                   style="font-size: 1.04em; margin-bottom: 1.1rem; background: #f8f9fa;">
+                {{ quiz.description }}
+              </div>
+
+              <div class="mb-0" style="font-size: 1em;">
+                <i class="bi bi-calendar-event me-1"></i>
+                <strong>Due Date:</strong> {{ quiz.scheduledAt | date: 'longDate' }}
+              </div>
+
+              <button class="btn btn-primary mt-4 w-100" style="font-size: 1.08em;"
+                      (click)="confirmAndNavigate(quiz.id)">
+                <i class="bi bi-play-circle me-1"></i> Take Test
+              </button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 </ng-container>
 
 <!-- No quizzes fallback -->

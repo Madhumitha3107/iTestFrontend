@@ -1,67 +1,103 @@
-<mat-sidenav-container class="test-layout">
-
-  <mat-sidenav-content>
-
-    <div class="content-wrapper">
-      <div class="test-container" *ngIf="questions.length">
-        <mat-card class="quiz-header mat-elevation-z4">
-          <div class="quiz-header-row">
-            <div>
-              <h2>{{ quizTitle }}</h2>
-              <p class="description">{{ description }}</p>
-              <p>Answer the following questions:</p>
-            </div>
-            <div class="score-info">
-              <p><strong>Total Marks:</strong> {{ totalMarks }}</p>
-              <p><strong>Score to Pass:</strong> {{ scoreToPass }}</p>
-            </div>
+<div class="container py-5">
+  <div *ngIf="questions.length">
+    
+    <!-- Quiz Header -->
+    <div class="card shadow-lg mb-4 border-0 p-3 bg-light">
+      <div class="card-body d-flex flex-wrap justify-content-between align-items-center">
+        <div>
+          <h2 class="fw-bold mb-1 text-primary">
+            <i class="bi bi-lightning-charge-fill me-2 text-warning"></i>{{ quizTitle }}
+          </h2>
+          <p class="text-muted mb-1">{{ description }}</p>
+          <span class=" text-dark  fs-6">Answer the following questions</span>
+        </div>
+        <div class="text-end">
+          <div class="mb-2">
+            <i class="bi bi-award-fill text-success me-1"></i>
+            <span class="fw-semibold">Total Marks:</span> {{ totalMarks }}
           </div>
-        </mat-card>
-
-        <form (ngSubmit)="submitQuiz()">
-          <div *ngFor="let question of questions; let i = index">
-            <mat-card class="question-card">
-              <h3>Q{{ i + 1 }}: {{ question.questionText }}</h3>
-              <mat-radio-group
-                [name]="'question_' + question.id"
-                (change)="selectAnswer(question.id, $event.value)">
-                <mat-radio-button
-                  *ngFor="let option of question.options"
-                  [value]="option.label"
-                  class="option-button">
-                  {{ option.label }}. {{ option.value }}
-                </mat-radio-button>
-              </mat-radio-group>
-            </mat-card>
+          <div>
+            <i class="bi bi-graph-up-arrow text-danger me-1"></i>
+            <span class="fw-semibold">Score to Pass:</span> {{ scoreToPass }}
           </div>
-
-          <div class="submit-button">
-            <button mat-raised-button color="accent" type="submit">
-              Submit
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
 
-<!-- Modal Template -->
-<ng-template #resultDialog>
-  <h2 mat-dialog-title class="text-center text-primary">Quiz Result</h2>
-  <mat-dialog-content class="mat-typography">
-    <p><strong>Title:</strong> {{ resultData?.quizTitle }}</p>
-    <p><strong>Total Marks:</strong> {{ resultData?.totalMarks }}</p>
-    <p><strong>Score Obtained:</strong> {{ resultData?.obtainedScore }}</p>
-    <p><strong>Percentage:</strong> {{ resultData?.percentage }}%</p>
-    <p>
-      <strong>Status:</strong>
-      <span [ngClass]="resultData?.passed ? 'text-success' : 'text-danger'">
-        {{ resultData?.passed ? 'Passed ✅' : 'Failed ❌' }}
+    <!-- Quiz Form -->
+    <form (ngSubmit)="submitQuiz()" class="quiz-form">
+      <div *ngFor="let question of questions; let i = index" class="mb-4">
+        <div class="card shadow-sm p-3 border-0 h-100">
+          <div class="card-body">
+            <h5 class="card-title d-flex align-items-center fw-semibold text-primary mb-3">
+              <span class="badge bg-primary bg-opacity-10 text-primary me-2 fs-6">Q{{ i + 1 }}</span>
+              <span class="fs-5"> {{ question.questionText }}</span>
+            </h5>
+
+            <div class="row g-3">
+              <div class="col-md-6" *ngFor="let option of question.options" (click)="selectAnswer(question.id, option.label)">
+                <div class="option-card p-3 border rounded d-flex align-items-center justify-content-between"
+                  [ngClass]="{'selected': answers[question.id] === option.label}">
+                  <div class="fw-bold fs-5">{{ option.label }}</div>
+                  <div class="ms-2 flex-grow-1">{{ option.value }}</div>
+                  <i *ngIf="answers[question.id] === option.label" class="bi bi-check-circle-fill text-success fs-5"></i>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="text-center mt-4">
+        <button type="submit" class="btn bg-primary text-white btn-lg px-5 shadow-sm">
+          <i class="bi bi-send-check-fill me-2"></i>Submit
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Result Modal Template -->
+<ng-template #resultDialog let-modal>
+  <div class="modal-header border-0 pb-0 mt-4 mb-3">
+    <h4 class="modal-title w-100 text-center text-primary fw-bold">
+     <span style="font-size: 24px !important;">Quiz Result</span>
+    </h4>
+  </div>
+  <div class="modal-body px-4 py-4">
+    <div class="mb-4 text-center">
+      <span class="fs-5 fw-semibold text-dark">
+        <i class="bi bi-bookmark-star-fill text-warning me-1"></i>
+        {{ resultData?.quizTitle }}
       </span>
-    </p>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-raised-button color="primary" (click)="proceed()">Proceed to Dashboard</button>
-  </mat-dialog-actions>
+    </div>
+    <div class="row g-3 justify-content-center mb-3">
+      <div class="col-6 text-end text-muted">Total Marks:</div>
+      <div class="col-6 text-start fw-bold">{{ resultData?.totalMarks }}</div>
+      <div class="col-6 text-end text-muted">Score Obtained:</div>
+      <div class="col-6 text-start fw-bold">{{ resultData?.obtainedScore }}</div>
+      <div class="col-6 text-end text-muted">Percentage:</div>
+      <div class="col-6 text-start fw-bold">{{ resultData?.percentage }}%</div>
+      <div class="col-6 text-end text-muted">Status:</div>
+      <div class="col-6 text-start">
+        <span [ngClass]="resultData?.passed ? 'text-success' : 'text-danger'" class="fw-bold">
+          <i class="bi" [ngClass]="resultData?.passed ? 'bi-check-circle-fill' : 'bi-x-circle-fill'"></i>
+          {{ resultData?.passed ? 'Passed' : 'Failed' }}
+        </span>
+      </div>
+    </div>
+    <div class="alert" [ngClass]="resultData?.passed ? 'alert-success' : 'alert-danger'" role="alert">
+      <i class="bi" [ngClass]="resultData?.passed ? 'bi-trophy-fill' : 'bi-emoji-frown-fill'"></i>
+      {{ resultData?.passed ? 'Congratulations! You passed the quiz.' : 'Better luck next time!' }}
+    </div>
+  </div>
+  <div class="modal-footer border-0 justify-content-center pb-4">
+    <button type="button" class="btn btn-primary px-5 py-2 shadow-sm" (click)="proceed()">
+      <i class="bi bi-arrow-right-circle-fill me-2"></i>Proceed to Dashboard
+    </button>
+  </div>
 </ng-template>
+
+

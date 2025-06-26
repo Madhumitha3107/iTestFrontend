@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+import { LOCAL_STORAGE } from './local-storage.token';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class UserService {
   private country: string = '';
   private phoneNumber: string = '';
 
-  constructor() {}
+  constructor( @Inject(LOCAL_STORAGE) private localStorage: Storage,) {}
 
   // Save user data
   setUserInfo(user: { id: number; email: string; fullName: string,country:string,phoneNumber:string }): void {
@@ -19,6 +20,9 @@ export class UserService {
     this.fullName = user.fullName;
     this.country = user.country;
     this.phoneNumber = user.phoneNumber;
+    // Optionally, you can also save to localStorage
+    this.localStorage.setItem('user', JSON.stringify(user));
+    
   }
 
   getUserId(): number | null {

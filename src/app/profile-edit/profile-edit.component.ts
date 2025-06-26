@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
 import { UserService } from '../userservice.service';
 import { ToastService } from '../toast.service';
+import { AppToasterService } from '../services/toaster.service';
 
 @Component({
   selector: 'app-profile-edit',
@@ -22,7 +23,7 @@ export class ProfileEditComponent implements OnInit {
   constructor(
     private api: ApiService,
     private userService: UserService,
-    private toast: ToastService
+    private toast: AppToasterService
   ) {}
 
   ngOnInit(): void {
@@ -32,6 +33,7 @@ export class ProfileEditComponent implements OnInit {
   this.api.get<any>(`User/${this.userId}/profile`).subscribe(res => {
     if (res.success && res.data) {
       const data = res.data;
+    
 
       this.profileData.name = (data.fullName && data.fullName !== 'string') ? data.fullName : '';
       this.profileData.mobile = (data.phoneNumber && data.phoneNumber !== 'string') ? data.phoneNumber : '';
@@ -53,13 +55,22 @@ export class ProfileEditComponent implements OnInit {
 
       this.api.user.updateProfile(this.userId, payload).subscribe(res => {
         if (res.success) {
-          this.toast.show('Profile updated successfully!', 'Close');
+          const data = res.data;
+        this.userService.setUserInfo({
+        id: this.userId,
+        email: this.userService.getEmail() || '',
+        fullName: data.fullName,
+        country: data.country,
+        phoneNumber: data.phone
+      });
+      
+          this.toast.success('Profile updated successfully!');
         } else {
-          this.toast.show('Failed to update profile', 'Close');
+          this.toast.error('Failed to update profile');
         }
       });
     } else {
-      this.toast.show('Please fill all fields correctly', 'Close');
+      this.toast.info('Please fill all fields correctly');
     }
   }
 }

@@ -12,6 +12,8 @@ import { ToastService } from '../toast.service';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
+  hidePassword: boolean = true;
+  confirmHidePassword: boolean = true;
   registerForm!: FormGroup;
 
   constructor(

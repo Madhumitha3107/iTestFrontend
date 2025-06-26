@@ -11,6 +11,7 @@ import { of } from 'rxjs';
   styleUrls: ['./forget-password.component.css']
 })
 export class ForgetPasswordComponent {
+  public loading: boolean = false;
   email: string = '';
 
   constructor(

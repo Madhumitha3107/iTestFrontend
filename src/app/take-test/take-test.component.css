@@ -54,3 +54,34 @@
   font-style: italic;
   color: #616161;
 }
+
+
+ .btn-gradient-primary {
+    background: linear-gradient(90deg, #4f8cff 0%, #6fd6ff 100%);
+    color: #fff;
+    border: none;
+  }
+  .btn-gradient-primary:hover {
+    background: linear-gradient(90deg, #3578e5 0%, #4fd1c5 100%);
+    color: #fff;
+  }
+  .card {
+    border-radius: 1.25rem;
+  }
+  .card-title .badge {
+    font-size: 1rem;
+    vertical-align: middle;
+  }
+  .option-card {
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    background-color: #f8f9fa;
+  }
+  .option-card:hover {
+    background-color: #e2e6ea;
+  }
+  .option-card.selected {
+    border: 2px solid #4f8cff;
+    background-color: #dbeeff;
+    box-shadow: 0 0 0 2px #4f8cff33;
+  }

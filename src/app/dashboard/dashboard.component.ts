@@ -42,10 +42,14 @@ export class DashboardComponent implements OnInit {
       legend: { display: true, position: 'bottom' },
       tooltip: {
         callbacks: {
-          label: (tooltipItem: TooltipItem<'line'>) => {
-            const score = tooltipItem.raw;
-            const quizTitle = this.stats?.lineGraph[tooltipItem.dataIndex]?.quizTitle || '';
-            return `${quizTitle}: ${score}`;
+          title: () => '',
+
+        
+        label: (tooltipItem: TooltipItem<'line'>) => {
+          const score = tooltipItem.parsed.y;
+          const quizTitle = this.stats?.lineGraph[tooltipItem.dataIndex]?.quizTitle || '';
+          return `${quizTitle}: ${score}`;
+        
           }
         }
       }
@@ -124,7 +128,7 @@ export class DashboardComponent implements OnInit {
     this.api.get<any>(`User/${this.userId}/recent-quizzes`).pipe(
       tap(res => {
         if (res.success && res.data) {
-          this.upcomingQuizzes = res.data.slice(0, 4);
+          this.upcomingQuizzes = res.data.slice(0, 6);
         }
       }),
       catchError(() => {

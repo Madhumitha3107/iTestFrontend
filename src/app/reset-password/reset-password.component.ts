@@ -11,6 +11,8 @@ import { of } from 'rxjs';
   styleUrls: ['./reset-password.component.css']
 })
 export class ResetPasswordComponent {
+  hidePassword: boolean = true;
+  confirmHidePassword: boolean = true;
   token: string = '';
   password: string = '';
   confirmPassword: string = '';
