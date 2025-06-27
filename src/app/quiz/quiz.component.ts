@@ -1,16 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { BehaviorSubject, Observable, of, combineLatest } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
-import { catchError, map, of, tap } from 'rxjs';
 import { UserService } from '../userservice.service';
 import { AppToasterService } from '../services/toaster.service';
-
-export interface Quiz {
-  id: number;
-  title: string;
-  description: string;
-  scheduledAt: string;
-}
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-quiz',
@@ -18,47 +12,67 @@ export interface Quiz {
   styleUrls: ['./quiz.component.css']
 })
 export class QuizComponent implements OnInit {
-  quizzes: Quiz[] = [];
-  loading: boolean = true;
+  quizzes$: Observable<any[]> = of([]);
+  categories: any[] = [];
+
+  searchTerm$ = new BehaviorSubject<string>('');
+  selectedCategory$ = new BehaviorSubject<string>('');
+
+  searchTerm = '';
+  selectedCategory = '';
 
   constructor(
-    private router: Router,
     private api: ApiService,
+    private userservice: UserService,
     private toast: AppToasterService,
-    private userservice: UserService
+    private router: Router
   ) {}
+
+  toISTDate(dateString: string): Date | null {
+    if (!dateString) return null;
+    const utcDate = new Date(dateString);
+    const istOffset = 5.5 * 60 * 60 * 1000; 
+    return new Date(utcDate.getTime() + istOffset);
+  }
 
   ngOnInit(): void {
     const userId = this.userservice.getUserId();
     if (!userId) {
-      this.toast.error('No user id available');
-      this.loading = false;
+      this.toast.error('User not found');
       return;
     }
 
-    this.api.user.getAvailableQuizzes(userId).pipe(
-      tap(res => {
-        if (!res.success) {
-          this.toast.error(res.message || 'Failed to load quizzes');
-        }
-      }),
-      map(res => (res.success ? res.data : [])),
-      catchError(() => {
-        this.toast.error('Error fetching quizzes');
-        return of([]);
-      })
-    ).subscribe(data => {
-      this.quizzes = data;
-      this.loading = false;
+    // Load all categories (including those with 0 quizzes)
+    this.api.getQuestionCategories().subscribe((res: any) => {
+      if (res.success) {
+        this.categories = res.data; // Show all categories including count 0
+      }
     });
+
+    // Set up reactive search with combineLatest to avoid multiple API calls
+    this.quizzes$ = combineLatest([
+      this.searchTerm$,
+      this.selectedCategory$
+    ]).pipe(
+      switchMap(([search, category]) =>
+        this.api
+          .getAvailableQuizzes(userId, category, search)
+          .pipe(map((res: any) => (res.success ? res.data : [])))
+      )
+    );
   }
 
-  confirmAndNavigate(quizId: number): void {
-    this.router.navigate(['/take-test', quizId]);
+  setSearch(value: string) {
+    this.searchTerm = value;
+    this.searchTerm$.next(value);
   }
 
-  logout(): void {
-    localStorage.clear();
-    this.router.navigate(['/login']);
+  setCategory(value: string) {
+    this.selectedCategory = value;
+    this.selectedCategory$.next(value);
+  }
+
+  confirmAndNavigate(id: number) {
+    this.router.navigate(['/take-test', id]);
   }
 }

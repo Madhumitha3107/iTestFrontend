@@ -93,7 +93,7 @@
               </div>
               <div class="mb-0" style="font-size: 1em;">
                 <i class="bi bi-calendar-event me-1"></i>
-                <strong>Scheduled:</strong> {{ quiz.scheduledAt | date: 'short' }}
+                <strong>Scheduled:</strong> {{ toISTDate(quiz.scheduledAt) | date: 'short' }}
               </div>
               <button class="btn btn-md btn-primary mt-4 w-100" style="font-size: 1.08em;"
                       (click)="confirmAndNavigate(quiz.id)">

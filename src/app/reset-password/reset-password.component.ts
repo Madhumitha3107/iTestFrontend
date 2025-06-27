@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../api.service';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { AppToasterService } from '../services/toaster.service';
+import { LOCAL_STORAGE } from '../local-storage.token';
+import { UserService } from '../userservice.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -20,8 +22,23 @@ export class ResetPasswordComponent {
   constructor(
     private router: Router,
     private api: ApiService,
-    private toast: AppToasterService
-  ) {}
+    private toast: AppToasterService,
+    @Inject(LOCAL_STORAGE) private localStorage:Storage,
+    private userService:UserService
+  ) {
+    if(this.localStorage.getItem('user')!==null){
+
+      const user = JSON.parse(this.localStorage.getItem('user') || '{}');
+      this.userService.setUserInfo({
+        id: user.id,
+        email: user.email,
+        fullName: user.fullName,
+        country: user.country,
+        phoneNumber: user.phoneNumber
+      });
+      router.navigate(["/dashboard"])
+    }
+  }
 
   onReset(form: any): void {
   if (form.valid && this.password === this.confirmPassword) {

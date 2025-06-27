@@ -9,7 +9,7 @@
 }
 
 .quiz-list-container {
-  min-height: 300px; 
+  min-height: 300px;
 }
 
 .no-quizzes {
@@ -21,4 +21,23 @@
 
 .loading-wrapper {
   min-height: 300px;
+}
+
+.upcoming-quiz-card {
+  min-width: 340px;
+  max-width: 400px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 1.08em;
+}
+
+.upcoming-quiz-card .card-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.25em;
 }

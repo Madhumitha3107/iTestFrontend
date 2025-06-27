@@ -84,8 +84,8 @@ user = {
     getQuizById: (id: number): Observable<any> => 
       this.get(`User/quiz/${id}`),
     
-    getAvailableQuizzes: (id:number): Observable<any> => 
-      this.get(`User/${id}/available-quizzes`),
+    // getAvailableQuizzes: (id:number): Observable<any> => 
+    //   this.get(`User/${id}/available-quizzes`),
     
     submitQuiz: (quizId: number, submission: any): Observable<any> => 
       this.post(`Quiz/${quizId}/submit`, submission),
@@ -98,6 +98,19 @@ user = {
 
 
   };
+  
+
+    getAvailableQuizzes(userId: number, category: string = '', search: string = '') {
+    let params = new HttpParams();
+    if (category) params = params.set('category', category);
+    if (search) params = params.set('search', search);
+
+    return this.get(`User/${userId}/available-quizzes`, params);
+  }
+
+  getQuestionCategories() {
+    return this.get(`User/question-categories`);
+  }
 
 
 }

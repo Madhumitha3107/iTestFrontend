@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../api.service';
@@ -6,6 +6,8 @@ import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 import { AppToasterService } from '../services/toaster.service';
+import { UserService } from '../userservice.service';
+import { LOCAL_STORAGE } from '../local-storage.token';
 
 @Component({
   selector: 'app-register',
@@ -21,8 +23,22 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
     private api: ApiService,
     private router: Router,
-    private toast: AppToasterService
-  ) {}
+    private userService:UserService,
+    private toast: AppToasterService,
+     @Inject(LOCAL_STORAGE) private localStorage: Storage,
+  ) {
+   if(this.localStorage.getItem('user')!==null){
+      const user = JSON.parse(this.localStorage.getItem('user') || '{}');
+      this.userService.setUserInfo({
+        id: user.id,
+        email: user.email,
+        fullName: user.fullName,
+        country: user.country,
+        phoneNumber: user.phoneNumber
+      });
+      router.navigate(["/dashboard"])
+    }
+  }
 
   ngOnInit(): void {
     this.registerForm = this.fb.group(

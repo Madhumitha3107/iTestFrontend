@@ -27,13 +27,30 @@ export class LoginComponent {
     private userService: UserService,
     @Inject(LOCAL_STORAGE) private localStorage: Storage,
     private toast: AppToasterService
-  ) {}
+  ) {
+    if(this.localStorage.getItem('user')!==null){
+
+      const user = JSON.parse(this.localStorage.getItem('user') || '{}');
+      this.userService.setUserInfo({
+        id: user.id,
+        email: user.email,
+        fullName: user.fullName,
+        country: user.country,
+        phoneNumber: user.phoneNumber
+      });
+      router.navigate(["/dashboard"])
+    }
+  }
+
+
+  
 
   onCaptchaResolved(token: string) {
     this.captchaToken = token;
     this.captchaError = false;
     console.log('CAPTCHA Token:', token);
   }
+
 
   onSubmit(form: NgForm) {
     if (!this.captchaToken) {
