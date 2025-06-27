@@ -49,7 +49,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SharedLayoutComponent } from './shared-layout/shared-layout.component';
 
+
 import { ToastrModule } from 'ngx-toastr';
+import { WelcomeComponent } from './welcome/welcome.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +66,8 @@ import { ToastrModule } from 'ngx-toastr';
     ForgetPasswordComponent,
     ResetPasswordComponent,
     NotFoundComponent,
-    SharedLayoutComponent
+    SharedLayoutComponent,
+    WelcomeComponent
   ],
 
   imports: [

@@ -12,6 +12,7 @@ import { ResultComponent } from './result/result.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { SharedLayoutComponent } from './shared-layout/shared-layout.component';
+import { WelcomeComponent } from './welcome/welcome.component';
 
 const routes: Routes = [
   // Public routes
@@ -19,7 +20,8 @@ const routes: Routes = [
   { path: 'forgot-password', component: ForgetPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'register', component: RegisterComponent },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'welcome', component: WelcomeComponent },
+  { path: '', redirectTo: 'welcome', pathMatch: 'full' },
 
   // Protected routes with shared layout
  {
