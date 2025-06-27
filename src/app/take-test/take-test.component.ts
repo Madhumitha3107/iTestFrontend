@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../api.service';
-import { ToastService } from '../toast.service';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
 import { UserService } from '../userservice.service';
+import { AppToasterService } from '../services/toaster.service';
 
 @Component({
   selector: 'app-take-test',
@@ -21,7 +21,6 @@ export class TakeTestComponent implements OnInit {
   totalMarks: number = 0;
   scoreToPass: number = 0;
 
-  // Store result for modal
   resultData: any = null;
 
   @ViewChild('resultDialog') resultDialog!: TemplateRef<any>;
@@ -30,7 +29,7 @@ export class TakeTestComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private api: ApiService,
-    private toast: ToastService,
+    private toast: AppToasterService,
     private dialog: MatDialog, 
     private userservice:UserService
   ) {}
@@ -38,14 +37,14 @@ export class TakeTestComponent implements OnInit {
   ngOnInit(): void {
     this.quizId = Number(this.route.snapshot.paramMap.get('id'));
     if (!this.quizId) {
-      this.toast.show('Invalid Quiz ID', 'Close');
+      this.toast.error('Invalid Quiz ID');
       return;
     }
 
     this.api.user.getQuizById(this.quizId).pipe(
       tap(res => {
         if (!res.success) {
-          this.toast.show(res.message || 'Failed to load quiz.', 'Close');
+          this.toast.error(res.message || 'Failed to load quiz.');
           this.router.navigate(['/quiz']);
         }
       }),
@@ -67,7 +66,7 @@ export class TakeTestComponent implements OnInit {
         }));
       }),
       catchError(err => {
-        this.toast.show('Error loading quiz. Try again later.', 'Close');
+        this.toast.error('Error loading quiz. Try again later.');
         return of(null);
       })
     ).subscribe();
@@ -80,7 +79,7 @@ export class TakeTestComponent implements OnInit {
   submitQuiz(): void {
     const userId = this.userservice.getUserId(); 
     if (!userId) {
-      this.toast.show('User not logged in. Please log in again.', 'Close');
+      this.toast.error('User not logged in. Please log in again.');
       return;
     }
 
@@ -101,12 +100,12 @@ export class TakeTestComponent implements OnInit {
             disableClose: true
           });
         } else {
-          this.toast.show(res.message || 'Submission failed.', 'Close');
+          this.toast.error(res.message || 'Submission failed.');
         }
       }),
       catchError(err => {
         console.error('Error from API:', err);
-        this.toast.show('Error submitting quiz.', 'Close');
+        this.toast.error('Error submitting quiz.');
         return of(null);
       })
     ).subscribe();

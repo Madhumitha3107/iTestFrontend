@@ -5,7 +5,6 @@ import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ApiService } from '../api.service';
 import { UserService } from '../userservice.service';
-import { ToastService } from '../toast.service';
 import { LOCAL_STORAGE } from '../local-storage.token';
 import { AppToasterService } from '../services/toaster.service';
 
@@ -61,10 +60,9 @@ export class LoginComponent {
               phoneNumber: user.phoneNumber
             });
             this.localStorage.setItem('user', JSON.stringify(user));
-            // this.toast.success('Login successful');
             this.router.navigate(['/dashboard',1]);
           } else {
-            this.toast.error(res?.message || 'Login failed', 'Close');
+            this.toast.error(res?.message || 'Login failed');
           }
         }),
         catchError((err) => {
@@ -74,7 +72,7 @@ export class LoginComponent {
         })
       ).subscribe();
     } else {
-      this.toast.info('Please fill all required fields correctly.', 'Close');
+      this.toast.info('Please fill all required fields correctly.');
     }
   }
 

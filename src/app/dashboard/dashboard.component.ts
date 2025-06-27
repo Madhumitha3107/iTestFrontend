@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../api.service';
-import { ToastService } from '../toast.service';
 import { UserService } from '../userservice.service';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ChartOptions, TooltipItem } from 'chart.js';
 import { HttpParams } from '@angular/common/http';
+import { AppToasterService } from '../services/toaster.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,6 +21,9 @@ export class DashboardComponent implements OnInit {
   totalPages: number = 1;
   limit: number = 10;
   userId!: number;
+  statsLoading = true;
+  quizzesLoading = true;
+  historyLoading = true;
 
   lineChartData = {
     labels: [] as string[],
@@ -87,7 +90,7 @@ export class DashboardComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private api: ApiService,
-    private toast: ToastService,
+    private toast: AppToasterService,
     private userService: UserService
   ) {}
 
@@ -107,6 +110,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadStats(): void {
+    this.statsLoading = true;
     this.api.user.getUserStats(this.userId).pipe(
       tap(res => {
         if (res.success) {
@@ -116,29 +120,35 @@ export class DashboardComponent implements OnInit {
           this.lineChartData.datasets[0].data = line.map((d: any) => d.score);
           this.pieChartData = [res.data.pieChart.passed, res.data.pieChart.failed];
         }
+        this.statsLoading = false;
       }),
       catchError(() => {
-        this.toast.show('Failed to load user stats', 'Close');
+        this.toast.error('Failed to load user stats');
+        this.statsLoading = false;
         return of(null);
       })
     ).subscribe();
   }
 
   loadUpcomingQuizzes(): void {
+    this.quizzesLoading = true;
     this.api.get<any>(`User/${this.userId}/recent-quizzes`).pipe(
       tap(res => {
         if (res.success && res.data) {
           this.upcomingQuizzes = res.data.slice(0, 6);
         }
+        this.quizzesLoading = false;
       }),
       catchError(() => {
-        this.toast.show('Failed to load upcoming quizzes', 'Close');
+        this.toast.error('Failed to load upcoming quizzes');
+        this.quizzesLoading = false;
         return of([]);
       })
     ).subscribe();
   }
 
   loadQuizHistory(page: number): void {
+    this.historyLoading = true;
     const params = new HttpParams().set('limit', this.limit.toString());
 
     this.api.get<any>(`User/user-history/${this.userId}/page/${page}`, params).pipe(
@@ -152,9 +162,11 @@ export class DashboardComponent implements OnInit {
           }));
           this.totalPages = res.totalPages;
         }
+        this.historyLoading = false;
       }),
       catchError(() => {
-        this.toast.show('Failed to load quiz history', 'Close');
+        this.toast.error('Failed to load quiz history');
+        this.historyLoading = false;
         return of(null);
       })
     ).subscribe();

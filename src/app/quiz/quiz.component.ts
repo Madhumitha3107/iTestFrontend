@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../api.service';
-import { ToastService } from '../toast.service';
-import { Observable, catchError, map, of, tap } from 'rxjs';
+import { catchError, map, of, tap } from 'rxjs';
 import { UserService } from '../userservice.service';
+import { AppToasterService } from '../services/toaster.service';
 
 export interface Quiz {
   id: number;
@@ -12,56 +12,49 @@ export interface Quiz {
   scheduledAt: string;
 }
 
-export interface QuizResponse {
-  success: boolean;
-  data: Quiz[];
-  message?: string;
-}
 @Component({
   selector: 'app-quiz',
   templateUrl: './quiz.component.html',
   styleUrls: ['./quiz.component.css']
 })
 export class QuizComponent implements OnInit {
- quizzes$!: Observable<Quiz[]>;
+  quizzes: Quiz[] = [];
+  loading: boolean = true;
 
   constructor(
     private router: Router,
     private api: ApiService,
-    private toast: ToastService,
-    private userservice :UserService
+    private toast: AppToasterService,
+    private userservice: UserService
   ) {}
 
   ngOnInit(): void {
-   try {
     const userId = this.userservice.getUserId();
     if (!userId) {
-      this.toast.show('No user id available');
+      this.toast.error('No user id available');
+      this.loading = false;
       return;
     }
-    this.quizzes$ = this.api.user.getAvailableQuizzes(userId).pipe(
-      tap((res: QuizResponse) => {
+
+    this.api.user.getAvailableQuizzes(userId).pipe(
+      tap(res => {
         if (!res.success) {
-          console.error('Error loading quizzes:', res.message);
+          this.toast.error(res.message || 'Failed to load quizzes');
         }
       }),
-      map((res: QuizResponse) => (res.success ? res.data : [])),
-      catchError((err) => {
-        const errorMessage =
-          err?.error?.message || 'Failed to load quizzes. Please try again later.';
-        this.toast.show(errorMessage, 'Close');
-        return of([]); 
+      map(res => (res.success ? res.data : [])),
+      catchError(() => {
+        this.toast.error('Error fetching quizzes');
+        return of([]);
       })
-    );
-  } catch (error) {
-    console.error('Unexpected error:', error);
-    this.toast.show('Unexpected error occurred', 'Close');
-    this.quizzes$ = of([]); 
-  }
+    ).subscribe(data => {
+      this.quizzes = data;
+      this.loading = false;
+    });
   }
 
   confirmAndNavigate(quizId: number): void {
-      this.router.navigate(['/take-test', quizId]);
+    this.router.navigate(['/take-test', quizId]);
   }
 
   logout(): void {

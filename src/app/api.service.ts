@@ -10,7 +10,7 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  // Base GET method
+
   public get<T>(url: string, params?: HttpParams): Observable<T> {
     return this.http.get<T>(`${this.API_ROOT}${url}`, {
       params,
@@ -18,28 +18,28 @@ export class ApiService {
     });
   }
 
-  // Base POST method
+ 
   private post<T>(url: string, body: any): Observable<T> {
     return this.http.post<T>(`${this.API_ROOT}${url}`, body, {
       withCredentials: true
     });
   }
 
-  // Base PUT method
+  
   private put<T>(url: string, body: any): Observable<T> {
     return this.http.put<T>(`${this.API_ROOT}${url}`, body, {
       withCredentials: true
     });
   }
 
-  // Base PATCH method
+  
   private patch<T>(url: string, body: any): Observable<T> {
     return this.http.patch<T>(`${this.API_ROOT}${url}`, body, {
       withCredentials: true
     });
   }
 
-  // Base DELETE method
+ 
   private delete<T>(url: string): Observable<T> {
     return this.http.delete<T>(`${this.API_ROOT}${url}`, {
       withCredentials: true
@@ -100,8 +100,4 @@ user = {
   };
 
 
-
-
-
-  // You will define specific API groups like `auth`, `quiz`, `user`, etc. below as we go
 }

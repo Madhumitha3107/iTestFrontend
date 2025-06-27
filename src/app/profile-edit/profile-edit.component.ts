@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
 import { UserService } from '../userservice.service';
-import { ToastService } from '../toast.service';
 import { AppToasterService } from '../services/toaster.service';
 
 @Component({

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../api.service';
-import { ToastService } from '../toast.service';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { AppToasterService } from '../services/toaster.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -20,7 +20,7 @@ export class ResetPasswordComponent {
   constructor(
     private router: Router,
     private api: ApiService,
-    private toast: ToastService
+    private toast: AppToasterService
   ) {}
 
   onReset(form: any): void {
@@ -33,18 +33,18 @@ export class ResetPasswordComponent {
     this.api.auth.resetPassword(payload).pipe(
       tap((res: any) => {
         const message = typeof res === 'string' ? res : res?.message || 'Password reset successful!';
-        this.toast.show(message, 'Close');
+        this.toast.success(message);
         this.router.navigate(['/login']);
       }),
       catchError(err => {
         console.error('Password reset failed:', err);
         const errorMessage = err?.error?.message || 'Invalid or expired token. Please try again.';
-        this.toast.show(errorMessage, 'Close');
+        this.toast.error(errorMessage);
         return of(null);
       })
     ).subscribe();
   } else {
-    this.toast.show('Please fix the errors before submitting.', 'Close');
+    this.toast.error('Please fix the errors before submitting.');
   }
 }
 

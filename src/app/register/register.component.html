@@ -1,7 +1,6 @@
 <div class="d-flex justify-content-center align-items-center min-vh-100 bg-gradient" style="background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);">
   <div class="card border-0 shadow-lg p-0 overflow-hidden" style="max-width: 420px; width: 100%; border-radius: 2rem;">
 
-    <!-- Decorative Header -->
     <div class="bg-primary text-white text-center py-4">
       <i class="bi bi-person-plus-fill fs-1"></i>
       <h2 class="fw-bold text-white mt-2 mb-0">Admin Registration</h2>
@@ -10,49 +9,51 @@
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="p-4" autocomplete="off" novalidate>
 
-      <!-- Full Name -->
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Full Name</label>
-        <input
-          type="text"
-          class="form-control"
-          formControlName="fullName"
-          placeholder="Enter your full name"
-        />
-        <div *ngIf="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid" class="invalid-feedback d-block">
-          <span *ngIf="registerForm.get('fullName')?.hasError('required')">Name is required</span>
-          <span *ngIf="registerForm.get('fullName')?.hasError('minlength')">Minimum 3 characters</span>
-        </div>
-      </div>
 
-      <!-- Email -->
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Email</label>
-        <input
-          type="email"
-          class="form-control"
-          formControlName="email"
-          placeholder="Enter your email"
-        />
-        <div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" class="invalid-feedback d-block">
-          <span *ngIf="registerForm.get('email')?.hasError('required')">Email is required</span>
-          <span *ngIf="registerForm.get('email')?.hasError('email')">Enter a valid email</span>
-        </div>
-      </div>
+    <div class="mb-3">
+    <label class="form-label fw-semibold">Full Name</label>
+    <input
+      type="text"
+      class="form-control"
+      formControlName="fullName"
+      autocomplete="off"
+      placeholder="Enter your full name"
+    />
+    <div *ngIf="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid" class="text-danger mt-1 small">
+      <span *ngIf="registerForm.get('fullName')?.hasError('required')">Name is required</span>
+      <span *ngIf="registerForm.get('fullName')?.hasError('minlength')">Minimum 3 characters</span>
+    </div>
+    </div>
 
-      <!-- Password -->
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Password</label>
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Email</label>
+      <input
+        type="email"
+        class="form-control"
+        formControlName="email"
+        autocomplete="off"
+        placeholder="Enter your email"
+      />
+    <div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" class="invalid-feedback d-block">
+      <span *ngIf="registerForm.get('email')?.hasError('required')">Email is required</span>
+      <span *ngIf="registerForm.get('email')?.hasError('email')">Enter a valid email</span>
+    </div>
+    </div>
+
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Password</label>
         <div class="input-group">
-          <input
-            [type]="hidePassword ? 'password' : 'text'"
-            class="form-control"
-            formControlName="password"
-            placeholder="Create a password"
-          />
-          <button type="button" class="btn btn-outline-secondary" (click)="hidePassword = !hidePassword" tabindex="-1">
-            <i class="bi" [ngClass]="hidePassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-          </button>
+        <input
+          [type]="hidePassword ? 'password' : 'text'"
+          class="form-control"
+          formControlName="password"
+          autocomplete="off"
+          placeholder="Create a password"
+        />
+        <button type="button" class="btn btn-outline-secondary" (click)="hidePassword = !hidePassword" tabindex="-1">
+          <i class="bi" [ngClass]="hidePassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+        </button>
         </div>
         <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" class="invalid-feedback d-block">
           <span *ngIf="registerForm.get('password')?.hasError('required')">Password is required</span>
@@ -62,13 +63,14 @@
         </div>
       </div>
 
-      <!-- Confirm Password -->
+
       <div class="mb-3">
         <label class="form-label fw-semibold">Confirm Password</label>
         <div class="input-group">
           <input
             [type]="confirmHidePassword ? 'password' : 'text'"
             class="form-control"
+            autocomplete="off"
             formControlName="confirmPassword"
             placeholder="Re-enter your password"
           />
@@ -84,7 +86,7 @@
         </div>
       </div>
 
-      <!-- reCAPTCHA -->
+
       <div class="mb-4 d-flex justify-content-center">
         <div>
           <re-captcha
@@ -97,19 +99,19 @@
         </div>
       </div>
 
-      <!-- Submit Button -->
+
       <div class="d-grid mb-3">
         <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm" [disabled]="registerForm.invalid">
           <i class="bi bi-person-check-fill me-2"></i>Register
         </button>
       </div>
 
-      <!-- Divider -->
+
       <div class="text-center text-muted mb-3">
         <span style="letter-spacing: 0.1em;">or</span>
       </div>
 
-      <!-- Login Link -->
+
       <div class="text-center">
         <span>Already have an account?</span>
         <a class="ms-1 link-primary fw-semibold" routerLink="/login">Login</a>

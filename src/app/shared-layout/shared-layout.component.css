@@ -1,16 +1,15 @@
-/* Sidenav container background */
 .sidenav-container {
   background: #f8f9fa;
 }
 
-/* Sidebar styling */
+
 .sidenav {
   width: 260px;
   background: #fff;
   border-right: 1px solid #e0e0e0;
 }
 
-/* Sidebar navigation link style */
+
 .sidebar-link {
   border-radius: 8px;
   margin: 4px 8px;
@@ -21,12 +20,12 @@
   color: #495057;
 }
 
-/* Sidebar icon sizing */
+
 .sidebar-link .mat-icon {
   font-size: 1.5rem;
 }
 
-/* Active and hover state for sidebar links */
+
 .sidebar-link.active-link,
 .sidebar-link:hover {
   background: #e3f2fd !important;
@@ -37,25 +36,25 @@
   color: #1976d2 !important;
 }
 
-/* Top toolbar shadow */
+
 .mat-toolbar.top-toolbar {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
-/* Main content background and shape */
+
 .main-content {
   background: #f8f9fa;
   border-radius: 12px;
 }
 
-/* Sidebar header text */
+
 .sidebar-header {
   font-size: 20px;
   background-color: var(--bs-primary);
   color: white;
 }
 
-/* List item sizing for material list */
+
 .mat-mdc-list-item,
 .mat-mdc-list-option {
   width: 93% !important;
@@ -63,25 +62,25 @@
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-/* Sticky toolbar */
+
 .top-toolbar {
   position: sticky;
   top: 0;
   z-index: 1050;
 }
 
-/* Spacer in toolbar */
+
 .spacer {
   flex: 1 1 auto;
 }
 
-/* Label position fix */
+
 .label {
   position: relative !important;
   bottom: 4.5px !important;
 }
 
-/* Header title font size */
+
 .header-title {
   font-size: 18px;
 }

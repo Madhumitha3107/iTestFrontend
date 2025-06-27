@@ -15,7 +15,7 @@ import { SharedLayoutComponent } from './shared-layout/shared-layout.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 
 const routes: Routes = [
-  // Public routes
+
   { path: 'login', component: LoginComponent },
   { path: 'forgot-password', component: ForgetPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
@@ -23,7 +23,7 @@ const routes: Routes = [
   { path: 'welcome', component: WelcomeComponent },
   { path: '', redirectTo: 'welcome', pathMatch: 'full' },
 
-  // Protected routes with shared layout
+
  {
     path: '',
     component: SharedLayoutComponent,
@@ -38,7 +38,7 @@ const routes: Routes = [
     ]
   },
 
-  // 404
+
   { path: '**', component: NotFoundComponent }
 ];
 

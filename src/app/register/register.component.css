@@ -1,10 +1,9 @@
-/* Background & Base Font */
 body {
-  background-color: #f3e5f5; /* Light Purple Background */
+  background-color: #f3e5f5; 
   font-family: Roboto, sans-serif;
 }
 
-/* Main Card */
+
 .register-card {
   max-width: 420px;
   margin: 60px auto;
@@ -14,23 +13,23 @@ body {
   background-color: #ffffff;
 }
 
-/* Title Style */
+
 .register-title {
   text-align: center;
   margin-bottom: 24px;
   font-size: 24px;
   font-weight: 600;
-  color: #512da8; /* Deep Purple */
+  color: #512da8; 
 }
 
-/* Form Field Style */
+
 mat-form-field {
   display: block;
   width: 100%;
   margin-bottom: 20px;
 }
 
-/* Captcha Centering */
+
 .captcha-wrapper {
   margin-top: 15px;
   display: flex;
@@ -38,14 +37,14 @@ mat-form-field {
   align-items: center;
 }
 
-/* Button Area */
+
 .button-wrapper {
   display: flex;
   justify-content: center;
   margin-top: 20px;
 }
 
-/* Register Text Link */
+
 .register-link {
   margin-top: 30px;
   text-align: center;

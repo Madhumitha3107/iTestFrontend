@@ -6,7 +6,7 @@ import { MatSnackBar, MatSnackBarConfig, MatSnackBarHorizontalPosition, MatSnack
 })
 export class ToastService {
 
-  private defaultDuration = 3000;  // 3 seconds
+  private defaultDuration = 3000;  
   private defaultHorizontalPosition: MatSnackBarHorizontalPosition = 'right';
   private defaultVerticalPosition: MatSnackBarVerticalPosition = 'top';
 

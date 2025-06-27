@@ -13,14 +13,14 @@ export class UserService {
 
   constructor( @Inject(LOCAL_STORAGE) private localStorage: Storage,) {}
 
-  // Save user data
+
   setUserInfo(user: { id: number; email: string; fullName: string,country:string,phoneNumber:string }): void {
     this.userId = user.id;
     this.email = user.email;
     this.fullName = user.fullName;
     this.country = user.country;
     this.phoneNumber = user.phoneNumber;
-    // Optionally, you can also save to localStorage
+ 
     this.localStorage.setItem('user', JSON.stringify(user));
     
   }
@@ -44,7 +44,6 @@ export class UserService {
     return false;
   }
 
-  // Optional - Clear on logout
   clearUserInfo(): void {
     this.userId = null;
     this.email = '';

@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 import { ApiService } from '../api.service';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { ToastService } from '../toast.service';
+
+import { AppToasterService } from '../services/toaster.service';
 
 @Component({
   selector: 'app-register',
@@ -20,13 +21,13 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
     private api: ApiService,
     private router: Router,
-    private toast: ToastService
+    private toast: AppToasterService
   ) {}
 
   ngOnInit(): void {
     this.registerForm = this.fb.group(
       {
-        fullName: ['', Validators.required],
+        fullName: ['', [Validators.required, Validators.minLength(3)]],
         email: ['', [Validators.required, Validators.email]],
         password: [
           '',
@@ -72,18 +73,18 @@ export class RegisterComponent implements OnInit {
     this.api.auth.register(payload).pipe(
       tap((res: any) => {
         const message = typeof res === 'string' ? res : res?.message || 'Registration successful';
-        this.toast.show(message, 'Close');
+        this.toast.success(message);
         this.registerForm.reset();
         this.router.navigate(['/login']);
       }),
       catchError((err) => {
         console.error('Register error:', err);
-        this.toast.show('Something went wrong.', 'Close');
+        this.toast.error(err.error.message);
         return of(null); 
       })
     ).subscribe();
   } else {
-    this.toast.show('Please fill all fields correctly.', 'Close');
+    this.toast.error('Please fill all fields correctly');
   }
 }
 }
