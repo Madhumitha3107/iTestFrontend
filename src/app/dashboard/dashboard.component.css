@@ -139,3 +139,19 @@
         background-color: unset !important;
         color: unset !important;
         }
+
+.card-body {
+  position: relative;
+}
+
+.live-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  background-color: #dc3545;
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+}

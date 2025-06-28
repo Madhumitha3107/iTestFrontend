@@ -31,7 +31,7 @@ export class QuizComponent implements OnInit {
   toISTDate(dateString: string): Date | null {
     if (!dateString) return null;
     const utcDate = new Date(dateString);
-    const istOffset = 5.5 * 60 * 60 * 1000; 
+    const istOffset = 5.5 * 60 * 60 * 1000;
     return new Date(utcDate.getTime() + istOffset);
   }
 
@@ -42,14 +42,12 @@ export class QuizComponent implements OnInit {
       return;
     }
 
-    // Load all categories (including those with 0 quizzes)
-    this.api.getQuestionCategories().subscribe((res: any) => {
+    this.api.getQuestionCategories(userId).subscribe((res: any) => {
       if (res.success) {
-        this.categories = res.data; // Show all categories including count 0
+        this.categories = res.data;
       }
     });
 
-    // Set up reactive search with combineLatest to avoid multiple API calls
     this.quizzes$ = combineLatest([
       this.searchTerm$,
       this.selectedCategory$

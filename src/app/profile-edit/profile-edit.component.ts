@@ -18,17 +18,24 @@ export class ProfileEditComponent implements OnInit {
   };
 
   userId!: number;
+  isSuperAdmin: boolean = false;
 
   constructor(
     private api: ApiService,
     private userService: UserService,
     private toast: AppToasterService
-  ) {}
+  ) {
+    console.log('User Role:', this.userService.getRole());
+    if(this.userService.getRole() === 'Admin' || this.userService.getRole() === 'SuperAdmin') {
+      this.isSuperAdmin = true;
+    }
+  }
 
+ 
   ngOnInit(): void {
   this.userId = this.userService.getUserId()!;
   if (!this.userId) return;
-
+  
   this.api.get<any>(`User/${this.userId}/profile`).subscribe(res => {
     if (res.success && res.data) {
       const data = res.data;
@@ -39,6 +46,7 @@ export class ProfileEditComponent implements OnInit {
       this.profileData.country = (data.country && data.country !== 'string') ? data.country : '';
       this.profileData.gender = (data.gender && data.gender !== 'string') ? data.gender : '';
       this.profileData.email = this.userService.getEmail() || '';
+      
     }
   });
 }

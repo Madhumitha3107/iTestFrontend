@@ -11,6 +11,11 @@
               {{ profileData.name ? profileData.name.charAt(0).toUpperCase() : '' }}
             </div>
           </div>
+          <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary text-capitalize">{{ profileData.name || 'User' }}</h2>
+            <!-- <p class="text-dark small" *ngIf="isSuperAdmin">Super Admin</p> -->
+
+          </div>
 
 
           <form #profileForm="ngForm" (ngSubmit)="onSubmit(profileForm)">

@@ -76,6 +76,7 @@ export class LoginComponent {
               country: user.country,
               phoneNumber: user.phoneNumber
             });
+            this.userService.setRole(user.role);
             this.localStorage.setItem('user', JSON.stringify(user));
             this.router.navigate(['/dashboard',1]);
           } else {

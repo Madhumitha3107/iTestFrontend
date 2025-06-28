@@ -10,7 +10,7 @@ export class UserService {
   private fullName: string = '';
   private country: string = '';
   private phoneNumber: string = '';
-
+  private role:string='';
   constructor( @Inject(LOCAL_STORAGE) private localStorage: Storage,) {}
 
 
@@ -25,6 +25,12 @@ export class UserService {
     
   }
 
+  setRole(role: string): void {
+    this.role = role;
+  }
+  getRole(): string {
+    return this.role;
+  } 
   getUserId(): number | null {
     return this.userId;
   }

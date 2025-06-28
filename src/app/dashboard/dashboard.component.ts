@@ -102,6 +102,20 @@ export class DashboardComponent implements OnInit {
     private userService: UserService
   ) {}
 
+  isFuture(quiz: any): boolean {
+    const date = this.toISTDate(quiz.rescheduledAt || quiz.scheduledAt);
+    return date ? date > new Date() : false;
+  }
+
+
+  isLive(quiz: any): boolean {
+    const now = new Date();
+    const scheduleTime = this.toISTDate(quiz.rescheduledAt || quiz.scheduledAt);
+    return scheduleTime !== null && scheduleTime <= now;
+  }
+
+
+
   ngOnInit(): void {
     this.userId = this.userService.getUserId()!;
     if (!this.userId) return;
@@ -143,7 +157,14 @@ export class DashboardComponent implements OnInit {
     this.api.get<any>(`User/${this.userId}/recent-quizzes`).pipe(
       tap(res => {
         if (res.success && res.data) {
-          this.upcomingQuizzes = res.data.slice(0, 6);
+          this.upcomingQuizzes = res.data
+          .sort((a: any, b: any) => {
+            const aTime = new Date(a.rescheduledAt || a.scheduledAt).getTime();
+            const bTime = new Date(b.rescheduledAt || b.scheduledAt).getTime();
+            return aTime - bTime;
+          })
+          .slice(0, 6);
+
         }
         this.quizzesLoading = false;
       }),

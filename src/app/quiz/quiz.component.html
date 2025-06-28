@@ -5,15 +5,9 @@
       <h2 class="section-title text-primary mb-0 fw-bold">
         Available Quizzes
       </h2>
-      <!-- <span class="badge bg-primary bg-opacity-75 fs-6 px-3 py-2">
-        <i class="bi bi-collection me-1"></i>
-        {{ (quizzes$ | async)?.length || 0 }} Quizzes
-      </span> -->
     </div>
 
-    <!-- Filter Controls -->
     <div class="row g-3 align-items-center mb-4 bg-white rounded shadow-sm px-3 pt-2 pb-4">
-      <!-- Search Input -->
       <div class="col-md-8">
         <div class="input-group">
           <span class="input-group-text bg-white border-end-0">
@@ -29,26 +23,26 @@
         </div>
       </div>
 
-      <!-- Category Dropdown -->
+
       <div class="col-md-4">
-        <div class="input-group input-group">
+        <div class="input-group">
           <span class="input-group-text bg-white border-end-0">
-        <i class="bi bi-tags"></i>
+            <i class="bi bi-tags"></i>
           </span>
           <select
             class="form-select form-select-sm border-start-0"
             [(ngModel)]="selectedCategory"
-            (ngModelChange)="setCategory($event)" >
+            (ngModelChange)="setCategory($event)">
             <option value="">All Categories</option>
             <option *ngFor="let cat of categories" [value]="cat.index">
-              {{ cat.name }} ({{ cat.totalQuizzes }})
+              {{ cat.name }} ({{ cat.availableQuizzes }})
             </option>
           </select>
         </div>
       </div>
     </div>
 
-    <!-- Quiz List -->
+
     <div *ngIf="quizzes$ | async as quizzes">
       <ng-container *ngIf="quizzes.length > 0; else noQuizzes">
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
@@ -57,14 +51,26 @@
               <h2 class="card-title mb-2 fw-semibold text-truncate" title="{{ quiz.title }}">
                 {{ quiz.title }}
               </h2>
-              <div class="text-muted mb-4 py-2 text-truncate rounded"
-                   style="font-size: 1.1em; ">
+
+              <div class="text-muted mb-4 py-2 text-truncate rounded" style="font-size: 1.1em;">
                 {{ quiz.description }}
               </div>
-              <div class="mb-0" style="font-size: 1em;">
+
+              <div class="mb-3" style="font-size: 1em;">
                 <i class="bi bi-calendar-event me-1"></i>
                 <strong>Scheduled:</strong> {{ toISTDate(quiz.scheduledAt) | date: 'short' }}
               </div>
+              <div class="d-flex justify-content-between mb-0" style="font-size: 1em;">
+              <div>
+                <i class="bi bi-list-ol me-1"></i>
+                <strong>Total Marks:</strong> {{ quiz.totalMarks }}
+              </div>
+              <div>
+                <i class="bi bi-award me-1"></i>
+                <strong>Score to Pass:</strong> {{ quiz.scoreToPass }}
+              </div>
+              </div>
+
               <button class="btn btn-md btn-primary mt-4 w-100" style="font-size: 1.08em;"
                       (click)="confirmAndNavigate(quiz.id)">
                 <i class="bi bi-play-circle me-1"></i> Take Test
@@ -74,7 +80,7 @@
         </div>
       </ng-container>
 
-      <!-- No Quizzes -->
+
       <ng-template #noQuizzes>
         <div class="text-center text-muted mt-5">
           <i class="bi bi-emoji-frown display-4"></i>

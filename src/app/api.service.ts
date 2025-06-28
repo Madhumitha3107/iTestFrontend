@@ -108,8 +108,8 @@ user = {
     return this.get(`User/${userId}/available-quizzes`, params);
   }
 
-  getQuestionCategories() {
-    return this.get(`User/question-categories`);
+  getQuestionCategories(id: number = 0): Observable<any> {
+    return this.get(`User/question-categories/${id}`);
   }
 
 

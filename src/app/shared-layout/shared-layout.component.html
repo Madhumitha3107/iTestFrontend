@@ -47,7 +47,7 @@
         <button mat-button [matMenuTriggerFor]="profileMenu"
           class="d-flex shadow-sm border align-items-center px-3 py-2">
           <mat-icon class="me-2" style="font-size: 1.2rem;">account_circle</mat-icon>
-          <span class="d-none d-md-inline">{{this.userService.getFullName()}}</span>
+          <span class="d-none d-md-inline text-capitalize">{{this.userService.getFullName()}}</span>
         </button>
         <mat-menu #profileMenu="matMenu">
           <button mat-menu-item routerLink="/profile-edit">
