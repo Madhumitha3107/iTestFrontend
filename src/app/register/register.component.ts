@@ -95,7 +95,7 @@ export class RegisterComponent implements OnInit {
       }),
       catchError((err) => {
         console.error('Register error:', err);
-        this.toast.error(err.error.message);
+        this.toast.error(err.error.message || 'Registration failed. Please try again.');
         return of(null); 
       })
     ).subscribe();

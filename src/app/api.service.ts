@@ -83,6 +83,8 @@ user = {
     
     getQuizById: (id: number): Observable<any> => 
       this.get(`User/quiz/${id}`),
+      getAvailableQuizById: (id: number,quizId:number): Observable<any> => 
+      this.get(`User/check-availability/${quizId}/user/${id}`),
     
     // getAvailableQuizzes: (id:number): Observable<any> => 
     //   this.get(`User/${id}/available-quizzes`),

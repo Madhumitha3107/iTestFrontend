@@ -53,7 +53,7 @@ export class ForgetPasswordComponent {
     catchError(err => {
       console.error('Error sending reset token:', err);
       const errorMessage = err?.error?.message || 'Failed to send reset token. Please try again.';
-      this.toast.error(errorMessage);
+      this.toast.error(err.error.message || errorMessage);
       return of(null);
     })
   ).subscribe();

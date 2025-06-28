@@ -85,7 +85,7 @@ export class LoginComponent {
         }),
         catchError((err) => {
           console.error('Login failed:', err);
-          this.toast.error(err.error.message);
+          this.toast.error(err.error.message || 'Login failed. Please try again.');
           return of(null);
         })
       ).subscribe();

@@ -56,7 +56,7 @@ export class ResetPasswordComponent {
       catchError(err => {
         console.error('Password reset failed:', err);
         const errorMessage = err?.error?.message || 'Invalid or expired token. Please try again.';
-        this.toast.error(errorMessage);
+        this.toast.error(err.error.message || errorMessage);
         return of(null);
       })
     ).subscribe();

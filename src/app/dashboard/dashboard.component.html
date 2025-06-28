@@ -70,9 +70,6 @@
       <div class="upcoming-quizzes-section mb-4">
         <div class="d-flex align-items-center justify-content-between mb-2">
           <h2 class="section-title mb-0">Upcoming Quizzes</h2>
-          <a *ngIf="!quizzesLoading && upcomingQuizzes.length > 0" class="btn btn-link p-0" routerLink="/quiz">
-             View More <i class="bi bi-arrow-right"></i>
-          </a>
         </div>
 
         <div *ngIf="quizzesLoading" class="d-flex justify-content-center py-4">

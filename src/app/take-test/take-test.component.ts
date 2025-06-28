@@ -40,8 +40,11 @@ export class TakeTestComponent implements OnInit {
       this.toast.error('Invalid Quiz ID');
       return;
     }
-
-    this.api.user.getQuizById(this.quizId).pipe(
+    if(!this.userservice.getUserId()) {
+      this.toast.error('User not logged in. Please log in again.');
+      return;
+    }
+    this.api.user.getAvailableQuizById(this.userservice.getUserId() as number,this.quizId).pipe(
       tap(res => {
         if (!res.success) {
           this.toast.error(res.message || 'Failed to load quiz.');
@@ -66,7 +69,7 @@ export class TakeTestComponent implements OnInit {
         }));
       }),
       catchError(err => {
-        this.toast.error('Error loading quiz. Try again later.');
+        this.toast.error(err.error.message || 'Failed to load quiz data.');
         return of(null);
       })
     ).subscribe();
@@ -105,7 +108,7 @@ export class TakeTestComponent implements OnInit {
       }),
       catchError(err => {
         console.error('Error from API:', err);
-        this.toast.error('Error submitting quiz.');
+        this.toast.error(err.error.message || 'An error occurred while submitting the quiz.');
         return of(null);
       })
     ).subscribe();

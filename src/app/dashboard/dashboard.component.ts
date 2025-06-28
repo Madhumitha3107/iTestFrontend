@@ -144,8 +144,8 @@ export class DashboardComponent implements OnInit {
         }
         this.statsLoading = false;
       }),
-      catchError(() => {
-        this.toast.error('Failed to load user stats');
+      catchError((err) => {
+        this.toast.error(err.error.message || 'Failed to load stats');
         this.statsLoading = false;
         return of(null);
       })
@@ -168,8 +168,8 @@ export class DashboardComponent implements OnInit {
         }
         this.quizzesLoading = false;
       }),
-      catchError(() => {
-        this.toast.error('Failed to load upcoming quizzes');
+      catchError((err) => {
+        this.toast.error(err.error.message || 'Failed to load upcoming quizzes');
         this.quizzesLoading = false;
         return of([]);
       })
@@ -193,8 +193,8 @@ export class DashboardComponent implements OnInit {
         }
         this.historyLoading = false;
       }),
-      catchError(() => {
-        this.toast.error('Failed to load quiz history');
+      catchError((err) => {
+        this.toast.error(err.error.message || 'Failed to load quiz history');
         this.historyLoading = false;
         return of(null);
       })
